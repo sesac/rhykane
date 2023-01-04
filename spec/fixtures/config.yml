@@ -1,0 +1,21 @@
+map_a:
+  transforms:
+    row:
+      rename_keys:
+        id: :record_id
+        desc: :title
+        total: :amount
+      accept_keys:
+        - :record_id
+        - :title
+        - :amount
+    values:
+      amount:
+        - :to_decimal
+  source:
+    type: :csv
+    opts:
+      col_sep: "\t"
+      headers: true
+  destination:
+    write_headers: false

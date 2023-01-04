@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  rhykane:
+    build:
+      context: '.'
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        BUNDLE_GITHUB__COM: "${BUNDLE_GITHUB__COM}"
+      target: "rhykane"
+    image: "rhykane"
+    environment:
+      - HISTFILE=/var/app/tmp/.bash_history
+    volumes:
+      - ".:/var/app"
+
+  chamber:
+    build:
+      context: "."
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+      target: "chamber"
+    image: "rhykane/chamber"
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+      - AWS_SECURITY_TOKEN
+      - AWS_SESSION_EXPIRATION
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}

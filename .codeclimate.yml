@@ -1,0 +1,29 @@
+---
+engines:
+  shellcheck:
+    enabled: true
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+    channel: 'rubocop-1-31-0'
+  bundler-audit:
+    enabled: true
+
+exclude_patterns:
+- "migration/db/**/*"
+- "config/"
+- "db/"
+- "tf/**/*.rb"
+- "util/**/*.rb"
+- "dist/"
+- "features/"
+- "**/node_modules/"
+- "script/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "Tests/"
+- "**/vendor/"
+- "**/*_test.go"
+- "**/*.d.ts"
