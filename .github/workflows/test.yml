@@ -1,0 +1,39 @@
+name: test
+
+on:
+  push:
+    branches:
+      - '**'
+
+defaults:
+  run:
+    shell: bash
+env:
+  DOCKER_BUILDKIT: '1'
+  COMPOSE_DOCKER_CLI_BUILD: '1'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GIT_BRANCH: ${{ github.ref_name }}
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    steps:
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: coverage before-build
+        run: |
+          set -x
+          curl -sL https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cctr
+          chmod +x ./cctr
+          ./cctr before-build
+      - name: build
+        run: docker-compose build
+      - name: test
+        run: docker-compose run --rm rhykane bundle exec rspec
+      - name: coverage
+        run: |
+          ./cctr after-build -p /var/app -t simplecov
