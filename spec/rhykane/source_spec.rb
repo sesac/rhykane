@@ -40,8 +40,8 @@ describe Rhykane::Source do
       end
     end
 
-    context 'with json' do
-      # TODO: spec with json type
-    end
+    # context 'with json' do
+    #   # TODO: spec with json type
+    # end
   end
 end

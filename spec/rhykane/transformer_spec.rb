@@ -7,9 +7,9 @@ require './lib/rhykane/transformer'
 
 describe Rhykane::Transformer do
   describe '.call' do
-    it 'does transformation on rows and values given configuration.'\
-       ' Keys are not automatically renamed.'\
-       ' Values are not required to be transformed.' do
+    it 'does transformation on rows and values given configuration. ' \
+       'Keys are not automatically renamed. ' \
+       'Values are not required to be transformed.' do
       cfg      = { transforms: { row: { rename_keys: { id: :record_id } } } }
       opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
       data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)

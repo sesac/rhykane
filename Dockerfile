@@ -22,7 +22,7 @@ ENV LC_ALL=en_US.UTF-8 \
 
 WORKDIR /var/app
 
-COPY Gemfile* /var/app/
+COPY . /var/app/
 
 RUN bundle install --jobs 20
 
