@@ -5,7 +5,6 @@ require_relative 'reader'
 require_relative 'writer'
 require_relative 'transformer'
 
-
 module Rhykane
   class Transform
     class << self
