@@ -10,7 +10,7 @@ describe Rhykane::Transformer do
     it 'does transformation on rows and values given configuration. ' \
        'Keys are not automatically renamed. ' \
        'Values are not required to be transformed.' do
-      cfg      = { transforms: { row: { rename_keys: { id: :record_id } } } }
+      cfg      = { row: { rename_keys: { id: :record_id } } }
       opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
       data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
       headers  = data.first.headers.sort
@@ -25,7 +25,7 @@ describe Rhykane::Transformer do
     end
 
     it 'does not require row transformation, by default will return array of csv rows' do
-      cfg      = { transforms: {} }
+      cfg      = {}
       opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
       data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
       expected = data.to_a
@@ -39,7 +39,7 @@ describe Rhykane::Transformer do
     it 'sets up transformation pipeline from config' do
       cfg_path = './spec/fixtures/config.yml'
       cfg      = Rhykane::Config.load(cfg_path)[:map_a]
-      opts     = cfg.dig(:source, :opts).merge(header_converters: :symbol)
+      opts     = cfg.dig(:reader, :opts).merge(header_converters: :symbol)
       data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
       expected = data.to_a.map(&:to_h).map { |row|
         row[:total] = row[:total].to_d
@@ -47,7 +47,7 @@ describe Rhykane::Transformer do
       }
       data.rewind
 
-      result = described_class.(data, **cfg).each.to_a
+      result = described_class.(data, **cfg[:transforms]).each.to_a
 
       expect(result.map(&:values)).to eq expected
       expect(result.map(&:keys).flatten.uniq).to eq cfg.dig(:transforms, :row, :accept_keys)
