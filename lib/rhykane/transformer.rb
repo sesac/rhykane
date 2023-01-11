@@ -25,9 +25,9 @@ module Rhykane
       end
     end
 
-    def initialize(transforms:, **)
-      fn      = pipeline(transforms.fetch(:row, []))
-      val_fns = transforms.fetch(:values, {}).transform_values { |val| pipeline(val) }
+    def initialize(row: [], values: {}, **)
+      fn      = pipeline(row)
+      val_fns = values.transform_values { |val| pipeline(val) }
       @row_fn = fn.>>(self.class[:transform_values, val_fns])
     end
 

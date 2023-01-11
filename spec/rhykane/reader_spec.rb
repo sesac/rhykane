@@ -3,10 +3,14 @@
 require 'csv'
 
 require './lib/rhykane/config'
-require './lib/rhykane/source'
+require './lib/rhykane/reader'
 
-describe Rhykane::Source do
+describe Rhykane::Reader do
   describe '.call' do
+    it 'raises an exception if an unknown type is passed' do
+      expect { described_class.(StringIO.new, type: :foo) }.to raise_error ArgumentError
+    end
+
     context 'with csv' do
       it 'deserializes io according to configuration options' do
         cfg  = { opts: { col_sep: "\t", headers: true } }
@@ -30,7 +34,7 @@ describe Rhykane::Source do
 
       it 'deserializes io according to configuration' do
         cfg_path = './spec/fixtures/config.yml'
-        cfg      = Rhykane::Config.load(cfg_path).dig(:map_a, :source)
+        cfg      = Rhykane::Config.load(cfg_path).dig(:map_a, :reader)
         path     = Pathname('./spec/fixtures/data.tsv')
         data     = path.open
 
@@ -40,8 +44,19 @@ describe Rhykane::Source do
       end
     end
 
-    # context 'with json' do
-    #   # TODO: spec with json type
-    # end
+    context 'with json' do
+      it 'deserializes io' do
+        cfg      = { type: :json, opts: {} }
+        path     = Pathname('./spec/fixtures/data.tsv')
+        expected = CSV.table(path, col_sep: "\t").map(&:to_h)
+        io       = StringIO.new
+        io.puts(expected.map { |row| JSON.generate(row) })
+        io.rewind
+
+        result = described_class.(io, **cfg).to_a
+
+        expect(result).to eq expected
+      end
+    end
   end
 end

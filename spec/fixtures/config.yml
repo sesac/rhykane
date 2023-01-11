@@ -12,10 +12,37 @@ map_a:
     values:
       amount:
         - :to_decimal
-  source:
+  reader:
     type: :csv
     opts:
       col_sep: "\t"
       headers: true
-  destination:
-    write_headers: false
+  writer:
+    type: :csv
+    opts:
+      write_headers: false
+
+map_b:
+  transforms:
+    row:
+      rename_keys:
+        id: :record_id
+        desc: :title
+        total: :amount
+      accept_keys:
+        - :record_id
+        - :title
+        - :amount
+  reader:
+    type: :csv
+    opts:
+      col_sep: "\t"
+      headers: true
+  writer:
+    type: :csv
+    opts:
+      headers:
+        - :record_id
+        - :title
+        - :amount
+      write_headers: true
