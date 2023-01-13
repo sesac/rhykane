@@ -150,7 +150,6 @@ DEPENDENCIES
   dotenv
   factory_bot
   faker
-  oj
   pry
   rake
   rhykane!

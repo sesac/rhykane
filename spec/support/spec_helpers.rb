@@ -22,9 +22,44 @@ module SpecHelpers
       end
     end
   end
+
+  module S3
+    def stub_s3_resource(stub_responses: true)
+      resource = Aws::S3::Resource.new(stub_responses:)
+      client   = resource.client
+
+      client.stub_responses(:upload_part, method(:upload_part).to_proc)
+
+
+      resource
+    end
+
+    def s3_root
+      @s3_root ||= Pathname('/tmp/s3')
+    end
+
+    def s3_path(*args)
+      s3_root.join(*args)
+    end
+
+    def upload_part(context)
+      params  = context.params
+      body    = params[:body]
+      content = body.read
+      etag    = Digest::MD5.hexdigest(content)
+      dest    = s3_path(*params.values_at(:bucket, :key)).tap { |d|
+        d.dirname.mkpath
+      }
+      body.rewind
+      dest.open('a+') do |f| f.write(content) end
+
+      OpenStruct.new(etag: etag, copy_part_result: OpenStruct.new(etag: etag))
+    end
+  end
 end
 
 RSpec.configure do |config|
   config.include SpecHelpers::Env
   config.include SpecHelpers::Fixtures
+  config.include SpecHelpers::S3
 end
