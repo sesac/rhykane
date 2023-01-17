@@ -53,7 +53,7 @@ module SpecHelpers
       body.rewind
       dest.open('a+') do |f| f.write(content) end
 
-      OpenStruct.new(etag: etag, copy_part_result: OpenStruct.new(etag: etag))
+      OpenStruct.new(etag:, copy_part_result: OpenStruct.new(etag:))
     end
   end
 end

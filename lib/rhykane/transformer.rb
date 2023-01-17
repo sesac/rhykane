@@ -3,7 +3,7 @@
 require 'dry/transformer'
 require 'dry/transformer/hash_transformations'
 
-module Rhykane
+class Rhykane
   class Transformer
     extend Dry::Transformer::Registry
     import Dry::Transformer::Coercions

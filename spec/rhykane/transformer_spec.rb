@@ -37,15 +37,12 @@ describe Rhykane::Transformer do
     end
 
     it 'sets up transformation pipeline from config' do
-      cfg_path = './spec/fixtures/config.yml'
-      cfg      = Rhykane::Config.load(cfg_path)[:map_a]
-      opts     = cfg.dig(:reader, :opts).merge(header_converters: :symbol)
-      data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
-      expected = data.to_a.map(&:to_h).map { |row|
-        row[:total] = row[:total].to_d
-        row.values
-      }
-      data.rewind
+      cfg_path   = './spec/fixtures/rhykane.yml'
+      cfg        = Rhykane::Jobs.load(cfg_path)[:map_a]
+      opts       = cfg.dig(:source, :opts).merge(header_converters: :symbol)
+      input_path = Pathname('./spec/fixtures/data.tsv')
+      data       = CSV.open(input_path, **opts)
+      expected   = CSV.read(input_path, converters: %i[float], **opts).map(&:to_h).map(&:values)
 
       result = described_class.(data, **cfg[:transforms]).each.to_a
 

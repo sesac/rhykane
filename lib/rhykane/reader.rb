@@ -4,7 +4,7 @@ require 'delegate'
 require 'csv'
 require 'oj'
 
-module Rhykane
+class Rhykane
   class Reader
     def self.call(io, type: :csv, **cfg)
       const_get(type.to_s.upcase, false).new(io, **cfg)
