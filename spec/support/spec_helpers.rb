@@ -30,7 +30,6 @@ module SpecHelpers
 
       client.stub_responses(:upload_part, method(:upload_part).to_proc)
 
-
       resource
     end
 
