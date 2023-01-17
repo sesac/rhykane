@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'delegate'
+require 'forwardable'
 require 'csv'
 require 'oj'
 
-module Rhykane
+class Rhykane
   class Writer
+    extend Forwardable
+
     def self.call(io, type: :csv, **cfg)
       const_get(type.to_s.upcase, false).new(io, **cfg)
     rescue NameError
@@ -16,6 +19,8 @@ module Rhykane
       @io   = io
       @opts = opts
     end
+
+    delegate %i[close] => :io
 
     private
 

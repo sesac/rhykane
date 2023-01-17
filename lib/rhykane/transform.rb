@@ -5,7 +5,7 @@ require_relative 'reader'
 require_relative 'writer'
 require_relative 'transformer'
 
-module Rhykane
+class Rhykane
   class Transform
     class << self
       def call(input, output, **cfg)
@@ -13,16 +13,17 @@ module Rhykane
       end
     end
 
-    def initialize(input, output, transforms:, reader:, writer:)
-      rd           = Reader.(input, **reader)
+    def initialize(input, output, transforms:, source:, destination:)
+      rd           = Reader.(input, **source)
       @transformer = Transformer.(rd, **transforms)
-      @writer      = Writer.(output, **writer)
+      @writer      = Writer.(output, **destination)
     end
 
     def call
       transformer.each do |row|
         writer.puts(row)
       end
+      writer.close
     end
 
     private

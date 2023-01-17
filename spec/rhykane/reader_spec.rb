@@ -33,8 +33,8 @@ describe Rhykane::Reader do
       end
 
       it 'deserializes io according to configuration' do
-        cfg_path = './spec/fixtures/config.yml'
-        cfg      = Rhykane::Config.load(cfg_path).dig(:map_a, :reader)
+        cfg_path = './spec/fixtures/rhykane.yml'
+        cfg      = Rhykane::Jobs.load(cfg_path).dig(:map_a, :source)
         path     = Pathname('./spec/fixtures/data.tsv')
         data     = path.open
 

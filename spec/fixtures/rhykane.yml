@@ -12,13 +12,18 @@ map_a:
     values:
       amount:
         - :to_decimal
-  reader:
-    type: :csv
+        - :to_float
+  source:
+    bucket: "foo"
+    key: "data.tsv"
+    type: "csv"
     opts:
       col_sep: "\t"
       headers: true
-  writer:
-    type: :csv
+  destination:
+    bucket: "bar"
+    key: "data.csv"
+    type: "csv"
     opts:
       write_headers: false
 
@@ -33,13 +38,17 @@ map_b:
         - :record_id
         - :title
         - :amount
-  reader:
-    type: :csv
+  source:
+    bucket: "foo"
+    key: "data.tsv"
+    type: "csv"
     opts:
       col_sep: "\t"
       headers: true
-  writer:
-    type: :csv
+  destination:
+    bucket: "bar"
+    key: "data.csv"
+    type: "csv"
     opts:
       headers:
         - :record_id

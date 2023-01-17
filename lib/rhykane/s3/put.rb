@@ -2,7 +2,7 @@
 
 require_relative 'get'
 
-module Rhykane
+class Rhykane
   module S3
     class Put < Get
       class << self

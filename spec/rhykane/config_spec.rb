@@ -3,13 +3,21 @@
 require './lib/rhykane/config'
 
 describe Rhykane::Config do
-  describe '.load' do
-    it 'loads configuration from a yml file' do
-      path = './spec/fixtures/config.yml'
+  describe '#call' do
+    it 'raises an error if a job config is invalid' do
+      cfg = {}
 
-      result = described_class.load(path)
+      expect { described_class.new.(cfg) }.to raise_error described_class::ConfigurationError
+    end
 
-      expect(result).to eq YAML.load_file(path, symbolize_names: true)
+    it 'returns a validated configuration hash' do
+      cfg = { transforms: {},
+              source: { bucket: 'foo', key: 'bar', type: 'baz' },
+              destination: { bucket: 'foo', key: 'bar', type: 'baz' } }
+
+      result = described_class.new.(cfg)
+
+      expect(result).to eq cfg
     end
   end
 end

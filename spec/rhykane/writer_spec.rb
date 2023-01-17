@@ -41,8 +41,8 @@ describe Rhykane::Writer do
       end
 
       it 'serializes io according to configuration' do
-        cfg_path = './spec/fixtures/config.yml'
-        cfg      = Rhykane::Config.load(cfg_path).dig(:map_a, :writer)
+        cfg_path = './spec/fixtures/rhykane.yml'
+        cfg      = Rhykane::Jobs.load(cfg_path).dig(:map_a, :destination)
         path     = Pathname('./spec/fixtures/data.tsv')
         src      = CSV.table(path, col_sep: "\t")
         io       = StringIO.new

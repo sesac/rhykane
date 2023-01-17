@@ -2,7 +2,7 @@
 
 require 'aws-sdk-s3'
 
-module Rhykane
+class Rhykane
   module S3
     class Get
       class << self

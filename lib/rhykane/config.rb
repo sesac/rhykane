@@ -1,15 +1,35 @@
 # frozen_string_literal: true
 
-require 'delegate'
-require 'ostruct'
-require 'yaml'
-
 require 'dry-validation'
 
-module Rhykane
-  class Config < DelegateClass(Hash)
-    def self.load(path)
-      new(YAML.load_file(path, symbolize_names: true, permitted_classes: [Symbol]))
+class Rhykane
+  class Config < Dry::Validation::Contract
+    ConfigurationError = Class.new(ArgumentError)
+
+    TransformsSchema = Dry::Schema.Params {
+      optional(:row).filled(:hash)
+      optional(:values).filled(:hash)
+    }
+
+    DataSchema = Dry::Schema.Params {
+      required(:bucket).filled(:string)
+      required(:key).filled(:string)
+      required(:type).filled(:string)
+      optional(:opts).filled(:hash)
+    }
+
+    params do
+      required(:transforms).hash(TransformsSchema)
+      required(:source).hash(DataSchema)
+      required(:destination).hash(DataSchema)
+    end
+
+    def call(*, **)
+      contract = super
+
+      return contract.to_h if contract.success?
+
+      raise ConfigurationError, contract.errors.to_h
     end
   end
 end
