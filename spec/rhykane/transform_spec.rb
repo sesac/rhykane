@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require './lib/rhykane/transform'
+require './lib/rhykane/jobs'
 
 describe Rhykane::Transform do
   describe '.call' do

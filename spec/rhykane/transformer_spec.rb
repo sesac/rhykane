@@ -2,7 +2,7 @@
 
 require 'csv'
 
-require './lib/rhykane/config'
+require './lib/rhykane/jobs'
 require './lib/rhykane/transformer'
 
 describe Rhykane::Transformer do
@@ -29,6 +29,30 @@ describe Rhykane::Transformer do
       opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
       data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
       expected = data.to_a
+      data.rewind
+
+      result = described_class.(data, **cfg).each.to_a
+
+      expect(result).to eq expected
+    end
+
+    it 'allows adding additional fields with default values' do
+      cfg      = { row: { deep_merge: { foo: nil, bat: nil } } }
+      opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
+      data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
+      expected = data.to_a.map { |r| r.to_h.merge(cfg.dig(:row, :deep_merge)) }
+      data.rewind
+
+      result = described_class.(data, **cfg).each.to_a
+
+      expect(result).to eq expected
+    end
+
+    it 'allows nesting fields under another' do
+      cfg      = { row: { nest: [:misc, %i[desc total]] } }
+      opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
+      data     = CSV.open(Pathname('./spec/fixtures/data.tsv'), **opts)
+      expected = data.to_a.map { |r| r.to_h.tap { |h| h[:misc] = { desc: h.delete(:desc), total: h.delete(:total) } } }
       data.rewind
 
       result = described_class.(data, **cfg).each.to_a

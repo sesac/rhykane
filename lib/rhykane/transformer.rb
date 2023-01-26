@@ -20,8 +20,10 @@ class Rhykane
         row
       end
 
-      def identity(this, *)
-        this
+      def nest(row, *args)
+        key, *vals = *args.flatten(1)
+
+        Dry::Transformer::HashTransformations.nest(row, key, *vals)
       end
     end
 
