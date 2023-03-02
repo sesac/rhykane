@@ -38,6 +38,9 @@ map_b:
         - :record_id
         - :title
         - :amount
+      set_default:
+        title: "default_value"
+        amount: "99"
   source:
     bucket: "foo"
     key: "data.tsv"
