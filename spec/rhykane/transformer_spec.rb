@@ -64,7 +64,7 @@ describe Rhykane::Transformer do
       cfg      = { row: { set_default: { desc: 'default value', total: 999 } } }
       opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
       data     = CSV.open(Pathname('./spec/fixtures/data_nil.tsv'), **opts)
-      expected = data.to_a.map { |r| r.to_h.tap { |h| h = h.merge!(cfg.dig(:row, :set_default)) if h[:desc].nil? } }
+      expected = data.to_a.map { |r| r.to_h.tap { |h| h.merge!(cfg.dig(:row, :set_default)) if h[:desc].nil? } }
       data.rewind
 
       result = described_class.(data, **cfg).each.to_a
