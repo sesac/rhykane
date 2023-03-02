@@ -60,6 +60,18 @@ describe Rhykane::Transformer do
       expect(result).to eq expected
     end
 
+    it 'allows setting default value if original value is nil' do
+      cfg      = { row: { set_default: { desc: 'default value', total: 999 } } }
+      opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
+      data     = CSV.open(Pathname('./spec/fixtures/data_nil.tsv'), **opts)
+      expected = data.to_a.map { |r| r.to_h.tap { |h| h = h.merge!(cfg.dig(:row, :set_default)) if h[:desc].nil? } }
+      data.rewind
+
+      result = described_class.(data, **cfg).each.to_a
+
+      expect(result).to eq expected
+    end
+
     it 'sets up transformation pipeline from config' do
       cfg_path   = './spec/fixtures/rhykane.yml'
       cfg        = Rhykane::Jobs.load(cfg_path)[:map_a]
