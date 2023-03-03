@@ -27,7 +27,7 @@ class Rhykane
       end
 
       def set_default(row, default)
-        Hash[row].tap { |r| default.each { |k, v| x[k] ||= v } }
+        Hash[row].tap { |r| default.each { |k, v| r[k] ||= v } }
       end
     end
 
