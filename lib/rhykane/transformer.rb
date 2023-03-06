@@ -25,6 +25,10 @@ class Rhykane
 
         Dry::Transformer::HashTransformations.nest(row, key, *vals)
       end
+
+      def set_default(row, default)
+        row.to_h.tap { |r| default.each { |k, v| r[k] ||= v } }
+      end
     end
 
     def initialize(row: [], values: {}, **)
