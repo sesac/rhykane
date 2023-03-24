@@ -33,7 +33,7 @@ class Rhykane
     end
 
     def initialize(row: [], values: {}, **)
-      super(**)
+      super(*)
       fn      = pipeline(row)
       val_fns = values.transform_values { |val| pipeline(val) }
       @row_fn = fn.>>(self.class[:transform_values, val_fns])
