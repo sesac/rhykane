@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative 'functions'
 require 'dry/transformer'
 require 'dry/transformer/hash_transformations'
@@ -32,6 +33,7 @@ class Rhykane
     end
 
     def initialize(row: [], values: {}, **)
+      super(**)
       fn      = pipeline(row)
       val_fns = values.transform_values { |val| pipeline(val) }
       @row_fn = fn.>>(self.class[:transform_values, val_fns])

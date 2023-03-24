@@ -9,11 +9,11 @@ class Functions
       JSON.dump(value) unless value.nil?
     end
 
-    def parse_period(value, op)
+    def parse_period(value, range)
       return if value.nil?
 
       date = Date.strptime(value, '%d%m%y')
-      op == :start ? date.beginning_of_month.strftime("%Y-%m-%d") : date.end_of_month.strftime("%Y-%m-%d")
+      range == :start ? date.beginning_of_month.strftime('%Y-%m-%d') : date.end_of_month.strftime('%Y-%m-%d')
     end
   end
 end
