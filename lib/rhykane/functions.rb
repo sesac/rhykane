@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
-require 'active_support'
-require 'active_support/core_ext'
-
 module Functions
   def to_json(value)
     JSON.dump(value) unless value.nil?
   end
 
-  def parse_period(value, range)
+  def parse_period(value, type)
     return if value.nil?
 
-    date = Date.strptime(value, '%d%m%y')
-    range == :start ? date.beginning_of_month.strftime('%Y-%m-%d') : date.end_of_month.strftime('%Y-%m-%d')
+    date = Date.strptime(value.slice(2..-1), '%m%y')
+    day = type == :start ? 1 : -1
+    Date.new(date.year, date.month, day).to_s
   end
 end
