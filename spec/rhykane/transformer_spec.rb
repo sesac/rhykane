@@ -72,6 +72,19 @@ describe Rhykane::Transformer do
       expect(result).to eq expected
     end
 
+    it "allows custom functions like to_json & parse_period to be run on values" do
+      cfg      = { row: { nest: [:misc, %i[desc total]] }, values: { period: { parse_period: :start }, misc: :to_json  } }
+      opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
+      data     = CSV.open(Pathname('./spec/fixtures/data_nil.tsv'), **opts)
+
+      result = described_class.(data, **cfg).each.to_a
+
+      result.each do |row|
+        expect { JSON.parse(row[:misc]) }.to_not raise_error
+        expect { Date.parse(row[:period]) }.to_not raise_error
+      end
+    end
+
     it 'sets up transformation pipeline from config' do
       cfg_path   = './spec/fixtures/rhykane.yml'
       cfg        = Rhykane::Jobs.load(cfg_path)[:map_a]

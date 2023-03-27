@@ -1,4 +1,4 @@
-id	desc	total
-asdf	Foo Bar	100
-lkjh	Bar Foo	20000
-qwer
+id	desc	total	period
+asdf	Foo Bar	100	011222
+lkjh	Bar Foo	20000	011222
+qwer			011222

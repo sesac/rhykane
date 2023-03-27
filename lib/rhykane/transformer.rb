@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require_relative 'functions'
 require 'dry/transformer'
 require 'dry/transformer/hash_transformations'
 
 class Rhykane
   class Transformer
+    extend Functions
     extend Dry::Transformer::Registry
     import Dry::Transformer::Coercions
     import Dry::Transformer::HashTransformations
