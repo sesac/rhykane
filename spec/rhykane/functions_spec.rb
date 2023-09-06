@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require './lib/rhykane/functions'
+require './rhykane/lib/rhykane/functions'
+# require './lib/rhykane/functions'
 
 describe Functions do
   let(:dummy_class) { Class.new { extend Functions } }
@@ -61,5 +62,29 @@ describe Functions do
     expect(Date.parse(result).day).to eq(30)
     expect(Date.parse(result).month).to eq(9)
     expect(Date.parse(result).year).to eq(2022)
+  end
+
+  it 'formats durations given in seconds to iso8601 durations' do
+    original_duration = '215.06612'
+    result = dummy_class.seconds_to_iso(original_duration)
+
+    expect(result).to eq('PT0H3M35S')
+
+    original_duration = '3600'
+    result = dummy_class.seconds_to_iso(original_duration)
+
+    expect(result).to eq('PT1H0M0S')
+  end
+
+  it 'formats durations given in MM:SS and HH:MM:SS to iso8601 durations' do
+    original_duration = '2:00'
+    result = dummy_class.military_to_iso(original_duration)
+
+    expect(result).to eq('PT0H2M0S')
+
+    original_duration = '1:07:03'
+    result = dummy_class.military_to_iso(original_duration)
+
+    expect(result).to eq('PT1H7M3S')
   end
 end
