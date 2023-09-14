@@ -15,8 +15,6 @@ class Rhykane
 
         def klass(key:, extension: Pathname(key).extname.delete('.').to_sym, **)
           const_get(DECOMPRESSION_STRATEGIES[extension].capitalize)
-        rescue NameError
-          self
         end
       end
 
