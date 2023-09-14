@@ -6,7 +6,7 @@ require 'zip'
 class Rhykane
   module S3
     class Get
-      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge( zip: 'unzip' ).freeze
+      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip').freeze
 
       class << self
         def call(*deps, **args, &)
@@ -49,7 +49,6 @@ class Rhykane
       end
 
       class Unzip < Get
-
         private
 
         def read
