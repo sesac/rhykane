@@ -21,16 +21,17 @@ describe Rhykane do
     end
 
     it 'reads a zipped file from S3, transforms it, and writes it back to a zip file in S3' do
-      cfg         = Rhykane::Jobs.load('./spec/fixtures/rhykane.yml')[:zipped]
-      input_path  = Pathname('./spec/fixtures/SlackerSesac2022Q3.zip')
-      # input_path  = Pathname('./spec/fixtures/Slacker_BasicRadioService_20220701_20220731_US.txt')
-      input       = input_path.open
-      res         = stub_s3_resource(stub_responses: { get_object: { body: input } })
-      dest_path   = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      cfg        = Rhykane::Jobs.load('./spec/fixtures/zipped/rhykane.yml')[:zipped]
+      input_path = Pathname('./spec/fixtures/zipped/input.zip')
+      input      = input_path.open
+      res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
+      dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
 
       described_class.(res, **cfg)
 
-      expected    = CSV.read(input_path, converters: %i[float], **cfg.dig(:source, :opts)).map(&:to_s).join
+      expected_path = Pathname('./spec/fixtures/zipped/expected.txt')
+      expected      = expected_path.read
+
       expect(dest_path.read).to eq expected
 
     ensure
