@@ -12,17 +12,20 @@ module Functions
 
     type, date_format, quarter_type = args.values_at(:type, :date_format, :quarter_type)
     date = Date.strptime(value, date_format)
-    day = type == :start ? 1 : -1
-    return Date.new(date.year, date.month, day).to_s if !quarter_type
-    quarterly_format(quarter_type, type, date, day)
+    day  = type == :start ? 1 : -1
+    return Date.new(date.year, date.month, day).to_s if quarter_type.nil?
+
+    quarter_args = { type: type, date: date, day: day }
+    quarter_type == :ordinal ? ordinal_quarter(**quarter_args) : numeric_quarter(**quarter_args)
   end
 
-  def quarterly_format(quarter_type, type, date, day)
-    if quarter_type == :ordinal
-      month = type == :start ? date.month * 3 - 2 : date.month * 3
-    else
-      month = type == :start ? date.month - 2 : date.month
-    end
+  def ordinal_quarter(type:, date:, day:)
+    month = type == :start ? (date.month * 3) - 2 : date.month * 3
+    Date.new(date.year, month, day).to_s
+  end
+
+  def numeric_quarter(type:, date:, day:)
+    month = type == :start ? date.month - 2 : date.month
     Date.new(date.year, month, day).to_s
   end
 
