@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require './rhykane/lib/rhykane/functions'
-# require './lib/rhykane/functions'
+require './lib/rhykane/functions'
 
 describe Functions do
   let(:dummy_class) { Class.new { extend Functions } }
