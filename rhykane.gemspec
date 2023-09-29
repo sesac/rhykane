@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dry-transformer', '~> 1.0'
   spec.add_dependency 'dry-validation', '~> 1.10'
   spec.add_dependency 'oj', '~> 3.13'
+  spec.add_dependency 'rubyzip', '~> 2.3'
 
   spec.add_development_dependency 'climate_control'
   spec.add_development_dependency 'dotenv'

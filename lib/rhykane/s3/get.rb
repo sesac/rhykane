@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 require 'aws-sdk-s3'
+require 'zip'
 
 class Rhykane
   module S3
     class Get
+      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip').freeze
+
       class << self
         def call(*deps, **args, &)
-          new(*deps, **args).(&)
+          klass(**args).new(*deps, **args).(&)
+        end
+
+        def klass(key:, extension: Pathname(key).extname.delete('.').to_sym, **)
+          const_get(DECOMPRESSION_STRATEGIES[extension].capitalize)
         end
       end
 
@@ -29,9 +36,28 @@ class Rhykane
 
       def get_thread(pipe)
         Thread.new {
-          object.get do |chunk, *| pipe << chunk end
+          read do |chunk| pipe << chunk end
           pipe.close
         }
+      end
+
+      def read
+        object.get do |chunk, *| yield chunk end
+      end
+
+      class Stream < Get
+      end
+
+      class Unzip < Get
+        private
+
+        def read
+          ::Zip::File.open_buffer(object.get.body) do |zip_file|
+            zip_file.each do |entry|
+              yield zip_file.read(entry)
+            end
+          end
+        end
       end
     end
   end
