@@ -13,7 +13,7 @@ module Functions
     date, day = get_day(value, **args)
     return create_date(date, day) unless args[:quarter_type]
 
-    qtr_args = { type: args[:type], date: date, day: day }
+    qtr_args = { type: args[:type], date:, day: }
     args[:quarter_type] == :ordinal ? ordinal_qtr(**qtr_args) : numeric_qtr(**qtr_args)
   end
 
@@ -24,7 +24,7 @@ module Functions
   end
 
   def create_date(date, day, month = nil)
-    month = date.month unless month
+    month ||= date.month
     Date.new(date.year, month, day).to_s
   end
 
