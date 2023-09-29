@@ -10,28 +10,36 @@ module Functions
   def parse_period(value, args)
     return if value.nil?
 
-    type, date_format, quarter_type = args.values_at(:type, :date_format, :quarter_type)
+    date, day = get_day(value, **args)
+    return create_date(date, day) unless args[:quarter_type]
+
+    qtr_args = { type: args[:type], date: date, day: day }
+    args[:quarter_type] == :ordinal ? ordinal_qtr(**qtr_args) : numeric_qtr(**qtr_args)
+  end
+
+  def get_day(value, date_format:, type:, **)
     date = Date.strptime(value, date_format)
     day  = type == :start ? 1 : -1
-    return Date.new(date.year, date.month, day).to_s if quarter_type.nil?
-
-    quarter_args = { type: type, date: date, day: day }
-    quarter_type == :ordinal ? ordinal_quarter(**quarter_args) : numeric_quarter(**quarter_args)
+    [date, day]
   end
 
-  def ordinal_quarter(type:, date:, day:)
+  def create_date(date, day, month = nil)
+    month = date.month unless month
+    Date.new(date.year, month, day).to_s
+  end
+
+  def ordinal_qtr(type:, date:, day:)
     month = type == :start ? (date.month * 3) - 2 : date.month * 3
-    Date.new(date.year, month, day).to_s
+    create_date(date, day, month)
   end
 
-  def numeric_quarter(type:, date:, day:)
+  def numeric_qtr(type:, date:, day:)
     month = type == :start ? date.month - 2 : date.month
-    Date.new(date.year, month, day).to_s
+    create_date(date, day, month)
   end
 
   def seconds_to_iso(original)
-    rounded  = original.to_f.round
-    duration = ActiveSupport::Duration.build(rounded)
+    duration = ActiveSupport::Duration.build(original.to_f.round)
     h = duration.parts[:hours]   || 0
     m = duration.parts[:minutes] || 0
     s = duration.parts[:seconds] || 0
@@ -40,7 +48,7 @@ module Functions
   end
 
   def military_to_iso(original)
-    parts = original.split(':').map(&:to_i)
+    parts   = original.split(':').map(&:to_i)
     h, m, s = parts[-3] || 0, parts[-2], parts[-1]
 
     "PT#{h}H#{m}M#{s}S"
