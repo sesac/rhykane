@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/date/calculations'
+
 module Functions
   def to_json(value)
     JSON.dump(value) unless value.nil?
