@@ -40,11 +40,7 @@ module Functions
 
   def seconds_to_iso(original)
     duration = ActiveSupport::Duration.build(original.to_f.round)
-    h = duration.parts[:hours]   || 0
-    m = duration.parts[:minutes] || 0
-    s = duration.parts[:seconds] || 0
-
-    "PT#{h}H#{m}M#{s}S"
+    duration.iso8601
   end
 
   def military_to_iso(original)

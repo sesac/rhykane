@@ -67,12 +67,12 @@ describe Functions do
     original_duration = '215.06612'
     result = dummy_class.seconds_to_iso(original_duration)
 
-    expect(result).to eq('PT0H3M35S')
+    expect(result).to eq('PT3M35S')
 
     original_duration = '3600'
     result = dummy_class.seconds_to_iso(original_duration)
 
-    expect(result).to eq('PT1H0M0S')
+    expect(result).to eq('PT1H')
   end
 
   it 'formats durations given in MM:SS and HH:MM:SS to iso8601 durations' do
