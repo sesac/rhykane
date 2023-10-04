@@ -26,7 +26,7 @@ describe Rhykane do
       input      = input_path.open
       res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
       dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
-
+ binding.pry
       described_class.(res, **cfg)
 
       expected_path = Pathname('./spec/fixtures/zipped/expected.txt')
@@ -36,6 +36,24 @@ describe Rhykane do
 
     ensure
       dest_path.delete if dest_path.exist?
+    end
+
+    it 'reads a gz file from S3, transforms it, and writes it back to a zip file in S3' do
+      cfg        = Rhykane::Jobs.load('./spec/fixtures/zipped/rhykane_gz.yml')[:zipped]
+      input_path = Pathname('./spec/fixtures/zipped/input_gzip.tar.gz')
+      input      = input_path.open
+      res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
+      dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+ binding.pry
+      described_class.(res, **cfg)
+# binding.pry
+      expected_path = Pathname('./spec/fixtures/zipped/expected.txt')
+      expected      = expected_path.read
+
+      expect(dest_path.read).to eq expected
+
+    # ensure
+    #   dest_path.delete if dest_path.exist?
     end
   end
 

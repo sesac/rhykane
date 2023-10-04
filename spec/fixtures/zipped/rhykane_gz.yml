@@ -1,0 +1,110 @@
+zipped:
+  transforms:
+    row:
+      rename_keys:
+        albumtitle: :album_title
+        albumartist: :albumartist
+        trackartist: :track_primary_artist
+        tracktitle: track_title
+        upc: :album_upc
+        trackid: :track_id
+        marketinglabel: :service_offering
+        totalperformances: :units
+      deep_merge:
+        usage_id: null
+        licensee_account_number: null
+        period_start_date: null
+        period_end_date: null
+        territory: null
+        storefront: null
+        configuration_code: null
+        agreement_code: null
+        rate: null
+        amount: null
+        hfa_song_code: null
+        composition_title: null
+        writers: null
+        track_isrc: null
+        track_duration: null
+        record_label: null
+        release_date: null
+      accept_keys:
+        - :usage_id
+        - :licensee_account_number
+        - :period_start_date
+        - :period_end_date
+        - :territory
+        - :storefront
+        - :configuration_code
+        - :agreement_code
+        - :rate
+        - :amount
+        - :hfa_song_code
+        - :composition_title
+        - :writers
+        - :track_isrc
+        - :track_duration
+        - :record_label
+        - :release_date
+        - :album_title
+        - :track_primary_artist
+        - :track_title
+        - :album_upc
+        - :track_id
+        - :service_offering
+        - :units
+        - :custom_fields
+        - :album_artist
+        - :subscription
+        - :partner
+      nest:
+        - :custom_fields
+        -
+          - :album_artist
+          - :subscription
+          - :partner
+    values:
+      custom_fields:
+        - :to_json
+  source:
+    bucket: "foo"
+    key: "foo.tar.gz"
+    type: "csv"
+    opts:
+      col_sep: "\t"
+      headers: true
+  destination:
+    bucket: "bar"
+    key: "bar.txt"
+    type: "csv"
+    opts:
+      write_headers: false
+      quote_char: '"'
+      force_quotes: false
+      col_sep: "\t"
+      headers:
+        - :usage_id
+        - :licensee_account_number
+        - :period_start_date
+        - :period_end_date
+        - :territory
+        - :storefront
+        - :configuration_code
+        - :agreement_code
+        - :rate
+        - :amount
+        - :hfa_song_code
+        - :composition_title
+        - :writers
+        - :track_isrc
+        - :track_duration
+        - :record_label
+        - :release_date
+        - :album_title
+        - :track_primary_artist
+        - :track_title
+        - :album_upc
+        - :track_id
+        - :service_offering
+        - :units
+        - :custom_fields
