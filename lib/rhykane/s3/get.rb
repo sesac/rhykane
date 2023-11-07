@@ -2,8 +2,8 @@
 
 require 'aws-sdk-s3'
 require 'zip'
-require 'zlib'
 require 'stringio'
+require 'zlib'
 require 'rubygems/package'
 
 class Rhykane
@@ -55,8 +55,6 @@ class Rhykane
         private
 
         def read
-          # puts "hi"
-          # binding.pry
           ::Zip::File.open_buffer(object.get.body) do |zip_file|
             zip_file.each do |entry|
               yield zip_file.read(entry)
@@ -69,47 +67,12 @@ class Rhykane
       private
 
         def read
-          # binding.pry
-          gzip_data = object.get.body.string
-          Zlib::GzipReader.wrap(StringIO.new(gzip_data)) do |gz|
-            gz.each_line do |line|
-              yield line.chomp 
+          Zlib::GzipReader.wrap(object.get.body) do |gz|
+            while (line = gz.gets)
+              yield line
             end
           end
         end
-
-        # def read_2
-        #   gzip_data = object.get.body.string
-        #   Zlib::GzipReader.wrap(StringIO.new(gzip_data)) do |gz|
-        #     tar = Gem::Package::TarReader.new(gz)
-        #     extracted_directory = 'tmp/'
-        #     Dir.mkdir(extracted_directory) unless Dir.exist?(extracted_directory)
-        #     tar.each do |entry|
-        #       entry_path = File.join(extracted_directory, entry.full_name)
-        #       if entry.directory?
-        #         FileUtils.mkdir_p(entry_path)
-        #       else
-        #         File.open(entry_path, 'wb') { |file| file.write(entry.read) }
-        #       end
-        #     end
-        #     puts "Files extracted to #{extracted_directory}"
-        #   end
-        # end
-
-        # def read_1
-        #   # puts "hi"
-        #   # Zlib::GzipReader.open_buffer(object.get.body) do |gz|
-        #   # Zlib::GzipReader.new(object.get.body) do |gz|
-        #   gzip_data = object.get.body.string
-        #   Zlib::GzipReader.wrap(StringIO.new(gzip_data)) do |gz|
-        #   binding.pry
-        #     return untar(gz) if gz.path.include?('.tar')
-        #     local_copy = Pathname(gz.path.chomp('.gz'))
-        #     local_copy.open('w') do |file| gz.each(&file.method(:puts)) end
-        #     send_to_s3(local_copy)
-        #     local_copy.delete
-        #   end
-        # end
       end
       # ---------
     end
