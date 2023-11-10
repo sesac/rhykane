@@ -14,10 +14,8 @@ class Rhykane
       end
 
       def call(input_io)
-        binding.pry
         object.upload_stream do |stream|
           IO.copy_stream(input_io, stream)
-          # binding.pry
         end
       end
     end
