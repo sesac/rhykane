@@ -63,7 +63,6 @@ class Rhykane
         end
       end
 
-      # ---------
       class Ungzip < Get
         private
 
@@ -75,7 +74,6 @@ class Rhykane
           end
         end
       end
-      # ---------
     end
   end
 end

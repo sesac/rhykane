@@ -6,7 +6,7 @@ describe Functions do
   let(:dummy_class) { Class.new { extend Functions } }
 
   it 'converts to json' do
-    value = {test: "test"}
+    value = { test: "test" }
     result = dummy_class.to_json(value)
 
     expect { JSON.parse(result) }.to_not raise_error

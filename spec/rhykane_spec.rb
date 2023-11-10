@@ -49,11 +49,11 @@ describe Rhykane do
 
       decompressed_content = Zlib::GzipReader.open(input_path) do |gz_file|
         gz_file.read
-      end 
+      end
 
       csv_data = CSV.parse(decompressed_content, col_sep: "\t", converters: %i[float])
 
-      expected_headers = ['Id', 'desc', 'total'] 
+      expected_headers = ['Id', 'desc', 'total']
 
       first_row_values = csv_data.first
 
