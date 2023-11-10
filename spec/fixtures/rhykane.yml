@@ -58,3 +58,32 @@ map_b:
         - :title
         - :amount
       write_headers: true
+
+map_c:
+  transforms:
+    row:
+      rename_keys:
+        id: :record_id
+        desc: :title
+        total: :amount
+      accept_keys:
+        - :record_id
+        - :title
+        - :amount
+    values:
+      amount:
+        - :to_decimal
+        - :to_float
+  source:
+    bucket: "foo"
+    key: "foo.txt.gz"
+    type: "csv"
+    opts:
+      col_sep: "\t"
+      headers: true
+  destination:
+    bucket: "bar"
+    key: "data.csv"
+    type: "csv"
+    opts:
+      write_headers: false      

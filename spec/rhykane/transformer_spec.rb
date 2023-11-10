@@ -73,7 +73,8 @@ describe Rhykane::Transformer do
     end
 
     it "allows custom functions like to_json & parse_period to be run on values" do
-      cfg      = { row: { nest: [:misc, %i[desc total]] }, values: { period: { parse_period: { type: :start, date_format: '01%m%y' } }, misc: :to_json  } }
+      cfg      = { row: { nest: [:misc, %i[desc total]] },
+                   values: { period: { parse_period: { type: :start, date_format: '01%m%y' } }, misc: :to_json } }
       opts     = { col_sep: "\t", headers: true, header_converters: :symbol }
       data     = CSV.open(Pathname('./spec/fixtures/data_nil.tsv'), **opts)
 

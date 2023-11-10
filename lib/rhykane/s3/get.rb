@@ -2,11 +2,14 @@
 
 require 'aws-sdk-s3'
 require 'zip'
+require 'stringio'
+require 'zlib'
+require 'rubygems/package'
 
 class Rhykane
   module S3
     class Get
-      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip').freeze
+      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip', gz: 'ungzip').freeze
 
       class << self
         def call(*deps, **args, &)
@@ -55,6 +58,18 @@ class Rhykane
           ::Zip::File.open_buffer(object.get.body) do |zip_file|
             zip_file.each do |entry|
               yield zip_file.read(entry)
+            end
+          end
+        end
+      end
+
+      class Ungzip < Get
+        private
+
+        def read
+          Zlib::GzipReader.wrap(object.get.body) do |gz|
+            while (line = gz.gets)
+              yield line
             end
           end
         end
