@@ -63,8 +63,9 @@ class Rhykane
         end
       end
 
+      # ---------
       class Ungzip < Get
-      private
+        private
 
         def read
           Zlib::GzipReader.wrap(object.get.body) do |gz|
