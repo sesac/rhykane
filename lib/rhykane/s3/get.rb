@@ -59,7 +59,7 @@ class Rhykane
           ::Zip::File.open_buffer(object.get.body) do |zip_file|
             zip_file.each do |entry|
               unless skip_first
-                zip_file.read(entry)
+                yield zip_file.read(entry)
               end
               skip_first = false
             end

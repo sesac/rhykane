@@ -3,9 +3,9 @@ zipped:
     row:
       rename_keys:
         albumtitle: :album_title
-        albumartist: :albumartist
+        albumartist: :album_artist
         trackartist: :track_primary_artist
-        tracktitle: track_title
+        tracktitle: :track_title
         upc: :album_upc
         trackid: :track_id
         marketinglabel: :service_offering
@@ -13,8 +13,6 @@ zipped:
       deep_merge:
         usage_id: null
         licensee_account_number: null
-        period_start_date: null
-        period_end_date: null
         territory: null
         storefront: null
         configuration_code: null
@@ -35,24 +33,24 @@ zipped:
         - :period_end_date
         - :territory
         - :storefront
+        - :service_offering
         - :configuration_code
         - :agreement_code
+        - :units
         - :rate
         - :amount
+        - :track_id
         - :hfa_song_code
         - :composition_title
         - :writers
         - :track_isrc
+        - :track_title
+        - :track_primary_artist
         - :track_duration
+        - :album_upc
+        - :album_title
         - :record_label
         - :release_date
-        - :album_title
-        - :track_primary_artist
-        - :track_title
-        - :album_upc
-        - :track_id
-        - :service_offering
-        - :units
         - :custom_fields
         - :album_artist
         - :subscription
@@ -75,13 +73,13 @@ zipped:
       headers: true
   destination:
     bucket: "bar"
-    key: "bar.txt"
+    key: "bar.tsv"
     type: "csv"
     opts:
-      write_headers: false
-      quote_char: '"'
-      force_quotes: false
       col_sep: "\t"
+      write_headers: false
+      force_quotes: false
+      quote_char: "\""
       headers:
         - :usage_id
         - :licensee_account_number
@@ -89,22 +87,22 @@ zipped:
         - :period_end_date
         - :territory
         - :storefront
+        - :service_offering
         - :configuration_code
         - :agreement_code
+        - :units
         - :rate
         - :amount
+        - :track_id
         - :hfa_song_code
         - :composition_title
         - :writers
         - :track_isrc
+        - :track_title
+        - :track_primary_artist
         - :track_duration
+        - :album_upc
+        - :album_title
         - :record_label
         - :release_date
-        - :album_title
-        - :track_primary_artist
-        - :track_title
-        - :album_upc
-        - :track_id
-        - :service_offering
-        - :units
         - :custom_fields
