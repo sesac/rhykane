@@ -54,7 +54,7 @@ class Rhykane
       class Unzip < Get
         private
 
-        def read(keep_header = true)
+        def read(keep_header: true)
           ::Zip::File.open_buffer(object.get.body) do |zip_file|
             zip_file.each do |entry|
               if keep_header
