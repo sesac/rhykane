@@ -54,12 +54,15 @@ class Rhykane
       class Unzip < Get
         private
 
-        def read
-          skip_first = true
+        def read(keep_header: true)
           ::Zip::File.open_buffer(object.get.body) do |zip_file|
             zip_file.each do |entry|
-              skip_first || yield(zip_file.read(entry))
-              skip_first = false
+              if keep_header
+                yield(zip_file.read(entry))
+              else
+                yield(zip_file.read(entry).split("\n", 2)[1])
+              end
+              keep_header = false
             end
           end
         end
