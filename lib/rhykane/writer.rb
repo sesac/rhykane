@@ -38,6 +38,7 @@ class Rhykane
     end
 
     class IO < Writer
+      super
     end
 
     class JSON < Writer
