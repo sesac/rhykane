@@ -19,7 +19,7 @@ class Rhykane
     }
 
     params do
-      required(:transforms).hash(TransformsSchema)
+      optional(:transforms).hash(TransformsSchema)
       required(:source).hash(DataSchema)
       required(:destination).hash(DataSchema)
     end
