@@ -28,7 +28,7 @@ class Rhykane
       end
     end
 
-    class IO > Reader
+    class IO < Reader
     end
 
     class JSON < Reader
