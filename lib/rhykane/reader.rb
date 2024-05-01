@@ -29,7 +29,9 @@ class Rhykane
     end
 
     class IO < Reader
-      super
+      def initialize(*,**)
+        super
+      end
     end
 
     class JSON < Reader
