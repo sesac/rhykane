@@ -28,6 +28,9 @@ class Rhykane
       end
     end
 
+    class IO < Reader
+    end
+
     class JSON < Reader
       include Enumerable
 

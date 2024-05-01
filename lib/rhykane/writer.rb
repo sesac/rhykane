@@ -37,6 +37,9 @@ class Rhykane
       end
     end
 
+    class IO < Writer
+    end
+
     class JSON < Writer
       def initialize(*, **)
         super
