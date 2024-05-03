@@ -38,6 +38,9 @@ class Rhykane
     end
 
     class IO < Writer
+      def puts(*rows)
+        io.puts(*rows)
+      end
     end
 
     class JSON < Writer
