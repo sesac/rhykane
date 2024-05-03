@@ -1,0 +1,11 @@
+map_a:
+  transforms:
+    empty: "empty"
+  source:
+    bucket: "foo"
+    key: "data.tsv"
+    type: "io"
+  destination:
+    bucket: "bar"
+    key: "data.csv"
+    type: "io"

@@ -70,6 +70,21 @@ describe Rhykane do
     ensure
       dest_path.delete if dest_path.exist?
     end
+
+    it 'reads a file from S3, renames it, and writes it back to a file in S3' do
+      cfg        = Rhykane::Jobs.load('./spec/fixtures/io_opts.yml')[:map_a]
+      input_path = Pathname('./spec/fixtures/data.tsv')
+      input      = input_path.open
+      res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
+      dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+
+      described_class.(res, **cfg)
+
+      expect(dest_path.read).to eq(input_path.read + "\n")
+
+    ensure
+      dest_path.delete if dest_path.exist?
+    end
   end
 
   describe '.for' do

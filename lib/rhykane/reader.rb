@@ -28,7 +28,10 @@ class Rhykane
       end
     end
 
-    class IO < Reader
+    class IO < SimpleDelegator
+      def initialize(io, opts: {}, **)
+        super(io)
+      end
     end
 
     class JSON < Reader
