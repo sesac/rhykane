@@ -29,7 +29,7 @@ class Rhykane
     end
 
     class IO < SimpleDelegator
-      def initialize(io, opts: {}, **)
+      def initialize(io, **)
         super(io)
       end
     end
