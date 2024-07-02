@@ -49,4 +49,12 @@ module Functions
 
     "PT#{h}H#{m}M#{s}S"
   end
+
+  def upcase(original)
+    original.upcase
+  end
+
+  def split(original)
+    original.split.first
+  end
 end
