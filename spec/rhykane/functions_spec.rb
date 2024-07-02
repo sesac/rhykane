@@ -86,4 +86,18 @@ describe Functions do
 
     expect(result).to eq('PT1H7M3S')
   end
+
+  it 'formats original to upcase' do
+    original_track_isrc = 'ushm21323790'
+    result = dummy_class.upcase(original_track_isrc)
+
+    expect(result).to eq('USHM21323790')
+  end
+
+  it 'splits original on space and returns the first element' do
+    original_release_date = '1978-01-01 00:00:00'
+    result = dummy_class.split(original_release_date)
+
+    expect(result).to eq('1978-01-01')
+  end
 end

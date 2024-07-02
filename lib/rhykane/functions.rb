@@ -55,6 +55,6 @@ module Functions
   end
 
   def split(original)
-    original.split(' ').first
+    original.split.first
   end
 end
