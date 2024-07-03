@@ -52,13 +52,13 @@ module Functions
 
   def upcase(original)
     return unless original
-    
+
     original.upcase
   end
 
   def split(original)
     return unless original
-
+    
     original.split.first
   end
 end
