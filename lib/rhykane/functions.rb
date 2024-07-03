@@ -58,7 +58,7 @@ module Functions
 
   def split(original)
     return unless original
-    
+
     original.split.first
   end
 end
