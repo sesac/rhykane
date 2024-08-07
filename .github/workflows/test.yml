@@ -31,7 +31,7 @@ jobs:
           chmod +x ./cctr
           ./cctr before-build
       - name: build
-        run: docker-compose build
+        run: docker compose build
       - name: test
         run: docker-compose run --rm rhykane bundle exec rspec
       - name: coverage
