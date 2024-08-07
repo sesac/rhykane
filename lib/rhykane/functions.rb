@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'activesupport/lib/active_support/duration'
+require 'active_support/lib/core_ext/date/calculations'
 
 module Functions
   def to_json(value)
