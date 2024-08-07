@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'activesupport', '~> 7.1.3.4'
   spec.add_dependency 'aws-sdk-s3', '~> 1.117'
   spec.add_dependency 'aws-sdk-ssm', '~> 1.146'
   spec.add_dependency 'dry-transformer', '~> 1.0'
