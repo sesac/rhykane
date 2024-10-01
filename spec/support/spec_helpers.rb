@@ -13,11 +13,9 @@ module SpecHelpers
     def self.included(mod)
       mod.instance_eval do
         fixture_path = './spec/fixtures/'
-        Pathname.glob(File.join(fixture_path, '**/*.json')).each do |file|
-          response_name = file.sub(fixture_path, '').to_s.tr('/', '_').split(file.extname).join.to_sym
-          let(response_name) {
-            JSON.parse(file.expand_path.read)
-          }
+        Pathname.glob(File.join(fixture_path, '**/*.*')).each do |file|
+          response_name = file.sub(fixture_path, '').to_s.tr('/', '_').split('.').first.to_sym
+          let(response_name) { file }
         end
       end
     end
@@ -37,8 +35,8 @@ module SpecHelpers
       @s3_root ||= Pathname('/tmp/s3')
     end
 
-    def s3_path(*args)
-      s3_root.join(*args)
+    def s3_path(*)
+      s3_root.join(*)
     end
 
     def upload_part(context)

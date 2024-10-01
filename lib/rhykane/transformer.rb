@@ -1,52 +1,32 @@
 # frozen_string_literal: true
 
-require_relative 'functions'
 require 'dry/transformer'
-require 'dry/transformer/hash_transformations'
+require 'dry/inflector'
+require_relative 'transformer/transforms'
 
 class Rhykane
   class Transformer
-    extend Functions
     extend Dry::Transformer::Registry
+
     import Dry::Transformer::Coercions
+    import Dry::Transformer::Conditional
     import Dry::Transformer::HashTransformations
+    import Dry::Transformer::ArrayTransformations
+    import Transforms
 
     class << self
-      def call(io, **cfg)
-        new(**cfg).(io)
-      end
-
-      def transform_values(row, transforms)
-        transforms.each do |key, transform| row[key] = transform.(row[key]) end
-
-        row
-      end
-
-      def nest(row, *args)
-        key, *vals = *args.flatten(1)
-
-        Dry::Transformer::HashTransformations.nest(row, key, *vals)
-      end
-
-      def set_default(row, default)
-        row.to_h.tap { |r| default.each { |k, v| r[k] ||= v } }
-      end
+      def call(io, **, &) = new(**, &).(io)
     end
 
-    def initialize(row: [], values: {}, **)
-      fn      = pipeline(row)
+    def initialize(row: [], values: {}, **, &block)
       val_fns = values.transform_values { |val| pipeline(val) }
-      @row_fn = fn.>>(self.class[:transform_values, val_fns])
+      @row_fn = pipeline(block) >> pipeline(row) >> self.class[:transform_values, val_fns]
     end
 
-    def call(io)
-      Stream.(io, row_fn)
-    end
+    def call(io) = Stream.(io, row_fn)
 
     class Stream
-      def self.call(io, transform)
-        new(io, transform)
-      end
+      def self.call(io, transform) = new(io, transform)
 
       def initialize(io, transform)
         @io        = io
