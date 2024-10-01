@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'aws-sdk-s3', '~> 1.117'
   spec.add_dependency 'aws-sdk-ssm', '~> 1.146'
+  spec.add_dependency 'dry-inflector', '~> 1.0'
   spec.add_dependency 'dry-transformer', '~> 1.0'
   spec.add_dependency 'dry-validation', '~> 1.10'
   spec.add_dependency 'oj', '~> 3.13'
