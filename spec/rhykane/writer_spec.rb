@@ -14,8 +14,7 @@ describe Rhykane::Writer do
     context 'with csv' do
       it 'serializes io according to configuration options' do
         cfg  = { type: :csv, opts: { write_headers: false } }
-        path = Pathname('./spec/fixtures/data.tsv')
-        src  = CSV.table(path, col_sep: "\t")
+        src  = CSV.table(tsv_data, col_sep: "\t")
         io   = StringIO.new
         dest = described_class.(io, **cfg)
 
@@ -27,8 +26,7 @@ describe Rhykane::Writer do
       it 'serializes io with headers specified in opts' do
         headers = %w[id title total]
         cfg     = { type: :csv, opts: { col_sep: "\t", headers:, write_headers: true } }
-        path    = Pathname('./spec/fixtures/data.tsv')
-        src     = CSV.table(path, col_sep: "\t")
+        src     = CSV.table(tsv_data, col_sep: "\t")
         io      = StringIO.new
         dest    = described_class.(io, **cfg)
 
@@ -43,8 +41,7 @@ describe Rhykane::Writer do
       it 'serializes io according to configuration' do
         cfg_path = './spec/fixtures/rhykane.yml'
         cfg      = Rhykane::Jobs.load(cfg_path).dig(:map_a, :destination)
-        path     = Pathname('./spec/fixtures/data.tsv')
-        src      = CSV.table(path, col_sep: "\t")
+        src      = CSV.table(tsv_data, col_sep: "\t")
         io       = StringIO.new
         dest     = described_class.(io, **cfg)
 
@@ -59,8 +56,7 @@ describe Rhykane::Writer do
 
       it 'serializes io' do
         cfg      = { type: :json, opts: {} }
-        path     = Pathname('./spec/fixtures/data.tsv')
-        src      = CSV.table(path, col_sep: "\t").map(&:to_h)
+        src      = CSV.table(tsv_data, col_sep: "\t").map(&:to_h)
         expected = src.map { |row| JSON.generate(row) }
         io       = StringIO.new
         dest     = described_class.(io, **cfg)
