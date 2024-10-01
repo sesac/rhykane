@@ -30,5 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dry-transformer', '~> 1.0'
   spec.add_dependency 'dry-validation', '~> 1.10'
   spec.add_dependency 'oj', '~> 3.13'
+  spec.add_dependency 'rexml', '~> 3.3'
   spec.add_dependency 'rubyzip', '~> 2.3'
 end
