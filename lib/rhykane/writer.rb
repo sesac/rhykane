@@ -16,8 +16,7 @@ class Rhykane
     end
 
     def initialize(io, opts: {}, **)
-      @io   = io
-      @opts = opts
+      @io, @opts = io, opts
     end
 
     delegate %i[close] => :io
@@ -32,15 +31,22 @@ class Rhykane
         @io = ::CSV.new(io, **opts)
       end
 
-      def puts(*rows)
-        io.puts(*rows.map { |row| ::CSV::Row.new(row.keys, row.values) })
+      def puts(*rows) = io.puts(*rows.map(&method(:row_to_csv).to_proc))
+
+      private
+
+      def row_to_csv(row)
+        case row
+        in **row
+          ::CSV::Row.new(row.keys, row.values)
+        in *row
+          row
+        end
       end
     end
 
     class IO < Writer
-      def puts(*rows)
-        io.puts(*rows)
-      end
+      def puts(*rows) = io.puts(*rows)
     end
 
     class JSON < Writer
@@ -49,9 +55,7 @@ class Rhykane
         Oj.mimic_JSON
       end
 
-      def puts(*rows)
-        io.puts(*rows.map { |row| ::JSON.generate(row) })
-      end
+      def puts(*rows) = io.puts(*rows.map { |row| ::JSON.generate(row) })
     end
   end
 end

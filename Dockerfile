@@ -22,7 +22,8 @@ ENV LC_ALL=en_US.UTF-8 \
 
 WORKDIR /var/app
 
-COPY . /var/app/
+COPY Gemfile* *.gemspec /var/app/
+COPY lib/rhykane/version.rb /var/app/lib/rhykane/
 
 RUN bundle install --jobs 20
 
