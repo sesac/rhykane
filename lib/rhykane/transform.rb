@@ -1,33 +1,25 @@
 # frozen_string_literal: true
 
-require_relative 'config'
-require_relative 'reader'
-require_relative 'writer'
 require_relative 'transformer'
 
 class Rhykane
   class Transform
-    class << self
-      def call(input, output, **cfg)
-        new(input, output, **cfg).()
-      end
-    end
+    def self.call(...) = new(...).()
 
-    def initialize(input, output, transforms:, source:, destination:)
-      rd           = Reader.(input, **source)
-      @transformer = Transformer.(rd, **transforms)
-      @writer      = Writer.(output, **destination)
+    def initialize(input, output, **, &)
+      @transformer = Transformer.(input, **, &)
+      @output      = output
     end
 
     def call
       transformer.each do |row|
-        writer.puts(row)
+        output.puts(row)
       end
-      writer.close
+      output.close
     end
 
     private
 
-    attr_reader :transformer, :writer
+    attr_reader :transformer, :output
   end
 end

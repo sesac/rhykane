@@ -28,6 +28,12 @@ class Rhykane
       end
     end
 
+    class IO < SimpleDelegator
+      def initialize(io, **)
+        super(io)
+      end
+    end
+
     class JSON < Reader
       include Enumerable
 

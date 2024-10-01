@@ -9,7 +9,7 @@ describe Rhykane::Jobs do
 
       result = described_class.load(path)
 
-      expect(result).to eq YAML.load_file(path, symbolize_names: true)
+      expect(result).to eq(YAML.load_file(path, symbolize_names: true, permitted_classes: [Symbol]))
     end
   end
 

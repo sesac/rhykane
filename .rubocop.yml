@@ -52,6 +52,9 @@ Style/HashTransformKeys:
 Style/HashTransformValues:
   Enabled: true
 
+Style/SingleLineDoEndBlock:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: aligned
