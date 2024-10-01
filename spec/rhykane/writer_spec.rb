@@ -12,7 +12,7 @@ describe Rhykane::Writer do
     end
 
     context 'with csv' do
-      it 'serializes io according to configuration options' do
+      it 'serializes hash rows according to configuration options' do
         cfg  = { type: :csv, opts: { write_headers: false } }
         src  = CSV.table(tsv_data, col_sep: "\t")
         io   = StringIO.new
@@ -21,6 +21,17 @@ describe Rhykane::Writer do
         src.each do |row| dest.puts(row.to_h) end
 
         expect(io.string.split("\n")).to eq src.to_s.split("\n")[1..]
+      end
+
+      it 'serializes array rows according to configuration options' do
+        cfg  = { type: :csv, opts: { write_headers: false } }
+        src  = CSV.table(tsv_data, col_sep: "\t").to_a
+        io   = StringIO.new
+        dest = described_class.(io, **cfg)
+
+        src.each do |row| dest.puts(row) end
+
+        expect(io.string.split("\n")).to eq src.map { |r| r.map(&:to_s).join(',') }
       end
 
       it 'serializes io with headers specified in opts' do
