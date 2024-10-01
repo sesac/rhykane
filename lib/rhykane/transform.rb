@@ -12,9 +12,7 @@ class Rhykane
     end
 
     def call
-      transformer.each do |row|
-        output.puts(row)
-      end
+      transformer.each(&output.method(:puts).to_proc)
       output.close
     end
 

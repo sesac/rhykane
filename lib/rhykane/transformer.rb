@@ -14,36 +14,34 @@ class Rhykane
     import Dry::Transformer::ArrayTransformations
     import Transforms
 
-    class << self
-      def call(io, **, &) = new(**, &).(io)
-    end
+    def self.call(enum, **, &) = new(**, &).(enum)
 
     def initialize(row: [], values: {}, **, &block)
       val_fns = values.transform_values { |val| pipeline(val) }
       @row_fn = pipeline(block) >> pipeline(row) >> self.class[:transform_values, val_fns]
     end
 
-    def call(io) = Stream.(io, row_fn)
+    def call(enum) = Stream.(enum, row_fn)
 
     class Stream
-      def self.call(io, transform) = new(io, transform)
+      def self.call(enum, transform) = new(enum, transform)
 
-      def initialize(io, transform)
-        @io        = io
+      def initialize(enum, transform)
+        @enum      = enum
         @transform = transform
       end
 
       def each
         return enum_for(__method__) unless block_given?
 
-        io.each do |row|
+        enum.each do |row|
           yield transform.(row)
         end
       end
 
       private
 
-      attr_reader :io, :transform
+      attr_reader :enum, :transform
     end
 
     private
