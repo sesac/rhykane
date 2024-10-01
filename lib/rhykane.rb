@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative './rhykane/jobs'
-require_relative './rhykane/reader'
-require_relative './rhykane/writer'
-require_relative './rhykane/transform'
-require_relative './rhykane/s3/get'
-require_relative './rhykane/s3/put'
+require_relative 'rhykane/jobs'
+require_relative 'rhykane/reader'
+require_relative 'rhykane/writer'
+require_relative 'rhykane/transform'
+require_relative 'rhykane/s3/get'
+require_relative 'rhykane/s3/put'
 
 class Rhykane
   class << self

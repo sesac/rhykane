@@ -35,8 +35,8 @@ module SpecHelpers
       @s3_root ||= Pathname('/tmp/s3')
     end
 
-    def s3_path(*args)
-      s3_root.join(*args)
+    def s3_path(*)
+      s3_root.join(*)
     end
 
     def upload_part(context)

@@ -16,7 +16,7 @@ class Rhykane
     def initialize(jobs)
       jobs = jobs.transform_values { |cfg| Config.new.(cfg) }
 
-      super(jobs)
+      super
     end
   end
 end
