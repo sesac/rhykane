@@ -12,9 +12,7 @@ class Rhykane
       DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip', gz: 'ungzip').freeze
 
       class << self
-        def call(*deps, **args, &)
-          klass(**args).new(*deps, **args).(&)
-        end
+        def call(*deps, **args, &) = klass(**args).new(*deps, **args).(&)
 
         def klass(key:, extension: Pathname(key).extname.delete('.').to_sym, **)
           const_get(DECOMPRESSION_STRATEGIES[extension].capitalize)
@@ -48,33 +46,43 @@ class Rhykane
         object.get do |chunk, *| yield chunk end
       end
 
-      class Stream < Get
-      end
+      class Stream < Get; end
 
       class Unzip < Get
         private
 
-        def read(keep_header: true)
-          ::Zip::File.open_buffer(object.get.body) do |zip_file|
-            zip_file.each do |entry|
-              if keep_header
-                yield(zip_file.read(entry))
-              else
-                yield(zip_file.read(entry).split("\n", 2)[1])
+        def read(&block)
+          return_header = true
+          get do |file|
+            ::Zip::File.open_buffer(file) do |zip_file|
+              zip_file.map(&:get_input_stream).each do |io|
+                header = io.readline
+                yield header if return_header
+                return_header = false
+                io.each(&block)
               end
-              keep_header = false
             end
+          end
+        end
+
+        def get
+          filename = Pathname(object.key).basename
+          extname  = filename.extname
+          pfx, ext = [filename.to_s.split(extname), extname].flatten
+          Tempfile.create([pfx, ext]) do |response_target|
+            object.get(response_target:)
+            yield response_target
           end
         end
       end
 
-      class Ungzip < Get
+      class Ungzip < Unzip
         private
 
-        def read
-          Zlib::GzipReader.wrap(object.get.body) do |gz|
-            while (line = gz.gets)
-              yield line
+        def read(&)
+          get do |file|
+            Zlib::GzipReader.wrap(file) do |gz|
+              gz.each(&)
             end
           end
         end

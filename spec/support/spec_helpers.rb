@@ -23,32 +23,21 @@ module SpecHelpers
 
   module S3
     def stub_s3_resource(stub_responses: true)
-      resource = Aws::S3::Resource.new(stub_responses:)
-      client   = resource.client
-
-      client.stub_responses(:upload_part, method(:upload_part).to_proc)
-
-      resource
+      Aws::S3::Resource.new(stub_responses:).tap { |this|
+        this.client.stub_responses(:upload_part, method(:upload_part).to_proc)
+      }
     end
 
-    def s3_root
-      @s3_root ||= Pathname('/tmp/s3')
-    end
-
-    def s3_path(*)
-      s3_root.join(*)
-    end
+    def s3_root               = @s3_root ||= Pathname('/tmp/s3')
+    def s3_path(*)            = s3_root.join(*)
+    def content_etag(content) = Digest::MD5.hexdigest(content)
 
     def upload_part(context)
-      params  = context.params
-      body    = params[:body]
-      content = body.read
-      etag    = Digest::MD5.hexdigest(content)
-      dest    = s3_path(*params.values_at(:bucket, :key)).tap { |d|
-        d.dirname.mkpath
-      }
-      body.rewind
-      dest.open('a+') do |f| f.write(content) end
+      bucket, key, body = context.params.values_at(:bucket, :key, :body)
+      content           = body.read.tap { body.rewind }
+      etag              = content_etag(content)
+      dest              = s3_path(bucket, key).tap { |this| this.dirname.mkpath}
+      dest.open('a+') do |file| file.write(content) end
 
       OpenStruct.new(etag:, copy_part_result: OpenStruct.new(etag:))
     end
