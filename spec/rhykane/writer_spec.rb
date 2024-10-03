@@ -31,7 +31,7 @@ describe Rhykane::Writer do
 
         src.each do |row| dest.puts(row) end
 
-        expect(io.string.split("\n")).to eq src.map { |r| r.map(&:to_s).join(',') }
+        expect(io.string.split("\n")).to eq(src.map { |r| r.map(&:to_s).join(',') })
       end
 
       it 'serializes io with headers specified in opts' do

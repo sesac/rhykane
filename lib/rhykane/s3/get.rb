@@ -42,36 +42,38 @@ class Rhykane
         }
       end
 
-      def read
-        object.get do |chunk, *| yield chunk end
-      end
+      def read = object.get do |chunk, *| yield chunk end
 
       class Stream < Get; end
 
       class Unzip < Get
         private
 
-        def read(&block)
-          return_header = true
-          get do |file|
-            ::Zip::File.open_buffer(file) do |zip_file|
-              zip_file.map(&:get_input_stream).each do |io|
-                header = io.readline
-                yield header if return_header
-                return_header = false
-                io.each(&block)
-              end
-            end
+        def read(&) = get do |file| stream_zip(file, &) end
+
+        def get
+          Tempfile.create(filename_parts) do |response_target|
+            object.get(response_target:)
+            yield response_target
           end
         end
 
-        def get
+        def filename_parts
           filename = Pathname(object.key).basename
           extname  = filename.extname
-          pfx, ext = [filename.to_s.split(extname), extname].flatten
-          Tempfile.create([pfx, ext]) do |response_target|
-            object.get(response_target:)
-            yield response_target
+
+          [filename.to_s.split(extname), extname].flatten
+        end
+
+        def stream_zip(zip, &) = ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, &) end
+
+        def stream_entries(entries, &)
+          return_header = true
+          entries.map(&:get_input_stream).each do |io|
+            header = io.readline
+            yield header if return_header
+            return_header = false
+            io.each(&)
           end
         end
       end
@@ -79,13 +81,10 @@ class Rhykane
       class Ungzip < Unzip
         private
 
-        def read(&)
-          get do |file|
-            Zlib::GzipReader.wrap(file) do |gz|
-              gz.each(&)
-            end
-          end
-        end
+        UNZIPPER = Zlib::GzipReader
+
+        def read(&)            = get do |file| stream_zip(file, &) end
+        def stream_zip(zip, &) = self.class::UNZIPPER.wrap(zip) do |gz| gz.each(&) end
       end
     end
   end

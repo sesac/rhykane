@@ -36,7 +36,7 @@ module SpecHelpers
       bucket, key, body = context.params.values_at(:bucket, :key, :body)
       content           = body.read.tap { body.rewind }
       etag              = content_etag(content)
-      dest              = s3_path(bucket, key).tap { |this| this.dirname.mkpath}
+      dest              = s3_path(bucket, key).tap { |this| this.dirname.mkpath }
       dest.open('a+') do |file| file.write(content) end
 
       OpenStruct.new(etag:, copy_part_result: OpenStruct.new(etag:))
