@@ -7,11 +7,11 @@ describe Rhykane do
     let(:config_path) { './spec/fixtures/rhykane.yml' }
 
     it 'reads and parses a tsv file from S3, transforms it, and writes it back to S3' do
-      cfg         = Rhykane::Jobs.load(config_path)[:map_a]
-      input       = tsv_data.open
-      res         = stub_s3_resource(stub_responses: { get_object: { body: input } })
-      dest_path   = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
-      expected    = CSV.read(tsv_data, converters: %i[float], **cfg.dig(:source, :opts)).map(&:to_s).join
+      cfg       = Rhykane::Jobs.load(config_path)[:map_a]
+      input     = tsv_data.open
+      res       = stub_s3_resource(stub_responses: { get_object: { body: input } })
+      dest_path = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      expected  = CSV.read(tsv_data, converters: %i[float], **cfg.dig(:source, :opts)).map(&:to_s).join
 
       described_class.(res, **cfg)
 
@@ -22,12 +22,18 @@ describe Rhykane do
 
     it 'reads and parses tsv files in a zipped archive from S3, transforms them, ' \
        'and writes a single file back to S3' do
-      cfg        = Rhykane::Jobs.load(config_path)[:zipped]
-      input      = zipped_data.open
-      res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
-      dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      cfg       = Rhykane::Jobs.load(config_path)[:zipped]
+      dest_path = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      cli       = stub_s3_resource(stub_responses: {
+                                     get_object: ->(ctx) {
+                                       IO.copy_stream(zipped_data, ctx.metadata[:response_target])
+                                       ctx.metadata[:response_target].rewind
 
-      described_class.(res, **cfg)
+                                       { etag: Digest::MD5.hexdigest(zipped_data.read) }
+                                     }
+                                   })
+
+      described_class.(cli, **cfg)
 
       expect(dest_path.read).to eq(zipped_expected.read)
     ensure
@@ -35,14 +41,20 @@ describe Rhykane do
     end
 
     it 'reads and parses a gzipped txt file from S3, transforms it, and writes it back to a txt file in S3' do
-      cfg        = Rhykane::Jobs.load(config_path)[:map_c]
-      input      = gzip_data.open
-      dat        = Zlib::GzipReader.open(gzip_data, &:read)
-      expected   = CSV.parse(dat, col_sep: "\t", headers: true, converters: %i[float]).to_csv(write_headers: false)
-      res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
-      dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      cfg       = Rhykane::Jobs.load(config_path)[:map_c]
+      dat       = Zlib::GzipReader.open(gzip_data, &:read)
+      expected  = CSV.parse(dat, col_sep: "\t", headers: true, converters: %i[float]).to_csv(write_headers: false)
+      dest_path = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      cli       = stub_s3_resource(stub_responses: {
+                                     get_object: ->(ctx) {
+                                       IO.copy_stream(gzip_data, ctx.metadata[:response_target])
+                                       ctx.metadata[:response_target].rewind
 
-      described_class.(res, **cfg)
+                                       { etag: Digest::MD5.hexdigest(zipped_data.read) }
+                                     }
+                                   })
+
+      described_class.(cli, **cfg)
 
       expect(dest_path.read).to eq(expected)
     ensure
