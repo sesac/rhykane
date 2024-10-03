@@ -24,28 +24,37 @@ class Rhykane
     @client, @work, @config = client, block, Config.new.(**)
   end
 
-  def call
-    IO.pipe do |rd, wr| transform(wr, rd) end
-  end
+  def call = IO.pipe do |rd, wr| transform_pipe(wr, rd) end
 
   private
 
   attr_reader :client, :work, :config
 
-  def transform(wr_io, rd_io)
-    out_thread = output_thread(rd_io)
+  def transform_pipe(wr_io, rd_io)
+    output_thread = new_output_thread(rd_io)
 
-    input_stream do |inpt|
-      Transform.(new_reader(inpt), new_writer(wr_io), **transforms, &work)
-    end
-    out_thread.join
+    transform_input(wr_io)
+  rescue StandardError, SignalException
+    output_thread.kill
+    raise
+  ensure
+    wr_io.close unless wr_io.closed?
+    output_thread.join
   end
 
-  def output_thread(rdr) = Thread.new { S3::Put.(client, rdr, **destination) }
-  def input_stream(&)    = S3::Get.(client, **source, &)
-  def new_reader(input)  = Reader.(input, **source)
-  def new_writer(io)     = Writer.(io, **destination)
-  def source             = config[:source]
-  def destination        = config[:destination]
-  def transforms         = config[:transforms]
+  def new_output_thread(rdr)
+    Thread.new {
+      Thread.current.abort_on_exception = true
+      S3::Put.(client, rdr, **destination)
+    }
+  end
+
+  def transform_input(wr_io) = input_stream do |inpt| transform(inpt, wr_io) end
+  def transform(inpt, wr_io) = Transform.(new_reader(inpt), new_writer(wr_io), **transforms, &work)
+  def input_stream(&)        = S3::Get.(client, **source, &)
+  def new_reader(input)      = Reader.(input, **source)
+  def new_writer(io)         = Writer.(io, **destination)
+  def source                 = config[:source]
+  def destination            = config[:destination]
+  def transforms             = config[:transforms]
 end

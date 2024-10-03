@@ -13,11 +13,7 @@ class Rhykane
         end
       end
 
-      def call(input_io)
-        object.upload_stream do |stream|
-          IO.copy_stream(input_io, stream)
-        end
-      end
+      def call(input_io) = object.upload_stream do |stream| IO.copy_stream(input_io, stream) end
     end
   end
 end

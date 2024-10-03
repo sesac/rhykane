@@ -23,33 +23,39 @@ class Rhykane
         @object = client.bucket(bucket).object(key)
       end
 
-      def call
-        IO.pipe do |rd, wr|
-          read_thread = get_thread(wr)
-          yield rd
-          read_thread.join
-        end
-      end
+      def call(&) = IO.pipe do |rd, wr| stream(rd, wr, &) end
 
       private
 
       attr_reader :object
 
-      def get_thread(pipe)
+      def stream(rd_io, wr_io, &)
+        output_thread = new_pipe_thread(rd_io, &)
+
+        read(wr_io)
+      rescue StandardError, SignalException
+        output_thread.kill
+        raise
+      ensure
+        wr_io.close unless wr_io.closed?
+        output_thread.join
+      end
+
+      def new_pipe_thread(pipe)
         Thread.new {
-          read do |chunk| pipe << chunk end
-          pipe.close
+          Thread.current.abort_on_exception = true
+          yield pipe
         }
       end
 
-      def read = object.get do |chunk, *| yield chunk end
+      def read(wr_io) = object.get do |chunk, *| wr_io << chunk end
 
       class Stream < Get; end
 
       class Unzip < Get
         private
 
-        def read(&) = get do |file| stream_zip(file, &) end
+        def read(wr_io) = get do |file| stream_zip(file, wr_io) end
 
         def get
           Tempfile.create(filename_parts) do |response_target|
@@ -65,15 +71,15 @@ class Rhykane
           [filename.to_s.split(extname), extname].flatten
         end
 
-        def stream_zip(zip, &) = ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, &) end
+        def stream_zip(zip, wr_io) = ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, wr_io) end
 
-        def stream_entries(entries, &)
+        def stream_entries(entries, wr_io)
           return_header = true
           entries.map(&:get_input_stream).each do |io|
             header = io.readline
-            yield header if return_header
+            wr_io << header if return_header
             return_header = false
-            io.each(&)
+            IO.copy_stream(io, wr_io)
           end
         end
       end
@@ -83,8 +89,8 @@ class Rhykane
 
         UNZIPPER = Zlib::GzipReader
 
-        def read(&)            = get do |file| stream_zip(file, &) end
-        def stream_zip(zip, &) = self.class::UNZIPPER.wrap(zip) do |gz| gz.each(&) end
+        def read(wr_io)            = get do |file| stream_zip(file, wr_io) end
+        def stream_zip(zip, wr_io) = self.class::UNZIPPER.wrap(zip) do |gz| IO.copy_stream(gz, wr_io) end
       end
     end
   end
