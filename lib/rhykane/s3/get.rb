@@ -73,9 +73,11 @@ class Rhykane
 
         def stream_zip(zip, wr_io) = ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, wr_io) end
 
+        ARCHIVE_GLOB_PATTERN = '{[!__MAC*]*,[!*DS_Store*],*}'
+
         def stream_entries(entries, wr_io)
           return_header = true
-          entries.map(&:get_input_stream).each do |io|
+          entries.glob(ARCHIVE_GLOB_PATTERN).map(&:get_input_stream).each do |io|
             header = io.readline
             wr_io << header if return_header
             return_header = false

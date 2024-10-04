@@ -88,6 +88,26 @@ describe Rhykane do
       dest_path.delete if dest_path.exist?
     end
 
+    it 'reads and parses tsv files in a zipped archive (macOS), transforms them, ' \
+       'and writes a single file back to S3' do
+      cfg       = Rhykane::Jobs.load(config_path)[:zipped_mac_os]
+      dest_path = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+      cli       = stub_s3_resource(stub_responses: {
+                                     get_object: ->(ctx) {
+                                       IO.copy_stream(zipped_mac_os_data, ctx.metadata[:response_target])
+                                       ctx.metadata[:response_target].rewind
+
+                                       { etag: Digest::MD5.hexdigest(zipped_mac_os_data.read) }
+                                     }
+                                   })
+
+      described_class.(cli, **cfg)
+
+      expect(dest_path.read).to eq(zipped_mac_os_expected.read)
+    ensure
+      dest_path.delete if dest_path.exist?
+    end
+
     it 'reads and parses a gzipped txt file from S3, transforms it, and writes it back to a txt file in S3' do
       cfg       = Rhykane::Jobs.load(config_path)[:map_c]
       dat       = Zlib::GzipReader.open(gzip_data, &:read)
