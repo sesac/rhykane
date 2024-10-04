@@ -208,3 +208,131 @@ zipped:
         - :record_label
         - :release_date
         - :custom_fields
+
+zipped_mac_os:
+  transforms:
+    row:
+      rename_keys:
+        play_count: :units
+        isrc_code: :track_isrc
+        song: :track_title
+        artist: :track_primary_artist
+        album: album_title
+        label: record_label
+      deep_merge:
+        usage_id: null
+        licensee_account_number: null
+        territory: null
+        storefront: null
+        configuration_code: null
+        agreement_code: null
+        rate: null
+        amount: null
+        track_id: null
+        hfa_song_code: null
+        composition_title: null
+        writers: null
+        track_duration: null
+        album_upc: null
+        release_date: null
+      accept_keys:
+        - :usage_id
+        - :licensee_account_number
+        - :period_start_date
+        - :period_end_date
+        - :territory
+        - :storefront
+        - :service_offering
+        - :configuration_code
+        - :agreement_code
+        - :units
+        - :rate
+        - :amount
+        - :track_id
+        - :hfa_song_code
+        - :composition_title
+        - :writers
+        - :track_isrc
+        - :track_title
+        - :track_primary_artist
+        - :track_duration
+        - :album_upc
+        - :album_title
+        - :record_label
+        - :release_date
+        - :custom_fields
+        - :company
+        - :station_name
+        - :catalog_number
+        - :date_of_transition
+        - :publisher_name
+        - :recording_label_name
+      nest:
+        - :custom_fields
+        -
+          - :company
+          - :station_name
+          - :catalog_number
+          - :date_of_transition
+          - :publisher_name
+          - :recording_label_name
+    values:
+      custom_fields:
+        - :as_json
+  source:
+    bucket: "foo"
+    key: "foo.zip"
+    type: "csv"
+    opts:
+      col_sep: "|"
+      quote_char: '^'
+      strip: true
+      liberal_parsing: true
+      headers:
+        - company
+        - station_name
+        - track_title
+        - track_primary_artist
+        - album_title
+        - record_label
+        - catalog_number
+        - track_isrc
+        - units
+        - date_of_transmission
+        - publisher_name
+        - recording_label_name
+  destination:
+    bucket: "bar"
+    key: "bar.tsv"
+    type: "csv"
+    opts:
+      col_sep: "\t"
+      write_headers: false
+      force_quotes: false
+      quote_char: "\""
+      headers:
+        - :usage_id
+        - :licensee_account_number
+        - :period_start_date
+        - :period_end_date
+        - :territory
+        - :storefront
+        - :service_offering
+        - :configuration_code
+        - :agreement_code
+        - :units
+        - :rate
+        - :amount
+        - :track_id
+        - :hfa_song_code
+        - :composition_title
+        - :writers
+        - :track_isrc
+        - :track_title
+        - :track_primary_artist
+        - :track_duration
+        - :album_upc
+        - :album_title
+        - :record_label
+        - :release_date
+        - :custom_fields
