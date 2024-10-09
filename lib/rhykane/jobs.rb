@@ -8,7 +8,7 @@ require_relative 'config'
 class Rhykane
   class Jobs < DelegateClass(Hash)
     def self.load(path)
-      jobs = YAML.load_file(path, symbolize_names: true, permitted_classes: [Symbol])
+      jobs = YAML.load_file(path, symbolize_names: true, permitted_classes: [Symbol], aliases: true)
 
       new(jobs)
     end

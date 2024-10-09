@@ -19,15 +19,15 @@ class Rhykane
         end
       end
 
-      def initialize(client = Aws::S3::Resource.new, bucket:, key:, **)
-        @object = client.bucket(bucket).object(key)
+      def initialize(client = Aws::S3::Resource.new, bucket:, key:, **opts)
+        @object, @opts = client.bucket(bucket).object(key), opts
       end
 
       def call(&) = IO.pipe do |rd, wr| stream(rd, wr, &) end
 
       private
 
-      attr_reader :object
+      attr_reader :object, :opts
 
       def stream(rd_io, wr_io, &)
         output_thread = new_pipe_thread(rd_io, &)
@@ -71,17 +71,21 @@ class Rhykane
           [filename.to_s.split(extname), extname].flatten
         end
 
-        def stream_zip(zip, wr_io) = ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, wr_io) end
+        def stream_zip(zip, wr_io) = new_zip_stream(zip) do |zip_file| stream_entries(zip_file, wr_io) end
+        def new_zip_stream(zip, &) = ::Zip::InputStream.open(zip, 0, decrypter, &)
+        def decrypter              = (pwd = opts[:password]) && Zip::TraditionalDecrypter.new(pwd)
 
-        ARCHIVE_GLOB_PATTERN = '{[!__MAC*]*,[!*DS_Store*],*}'
+        ENTRY_EXCLUDE_PATTERN = /(__MACOSX|\.DS_Store)/
 
-        def stream_entries(entries, wr_io)
+        def stream_entries(input_io, wr_io)
           return_header = true
-          entries.glob(ARCHIVE_GLOB_PATTERN).map(&:get_input_stream).each do |io|
-            header = io.readline
+          while (entry = input_io.get_next_entry)
+            next if entry.name.match?(self.class::ENTRY_EXCLUDE_PATTERN)
+
+            header = input_io.readline
             wr_io << header if return_header
             return_header = false
-            IO.copy_stream(io, wr_io)
+            IO.copy_stream(input_io, wr_io)
           end
         end
       end
