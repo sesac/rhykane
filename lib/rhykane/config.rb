@@ -15,6 +15,7 @@ class Rhykane
       required(:bucket).filled(:string)
       required(:key).filled(:string)
       required(:type).filled(:string)
+      optional(:password).filled(:string)
       optional(:opts).filled(:hash)
     }
 

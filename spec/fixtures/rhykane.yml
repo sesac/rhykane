@@ -209,6 +209,116 @@ zipped:
         - :release_date
         - :custom_fields
 
+zipped_password:
+  transforms:
+    row:
+      rename_keys:
+        albumtitle: :album_title
+        albumartist: :album_artist
+        trackartist: :track_primary_artist
+        tracktitle: :track_title
+        upc: :album_upc
+        trackid: :track_id
+        marketinglabel: :service_offering
+        totalperformances: :units
+      deep_merge:
+        usage_id: null
+        licensee_account_number: null
+        territory: null
+        storefront: null
+        configuration_code: null
+        agreement_code: null
+        rate: null
+        amount: null
+        hfa_song_code: null
+        composition_title: null
+        writers: null
+        track_isrc: null
+        track_duration: null
+        record_label: null
+        release_date: null
+      accept_keys:
+        - :usage_id
+        - :licensee_account_number
+        - :period_start_date
+        - :period_end_date
+        - :territory
+        - :storefront
+        - :service_offering
+        - :configuration_code
+        - :agreement_code
+        - :units
+        - :rate
+        - :amount
+        - :track_id
+        - :hfa_song_code
+        - :composition_title
+        - :writers
+        - :track_isrc
+        - :track_title
+        - :track_primary_artist
+        - :track_duration
+        - :album_upc
+        - :album_title
+        - :record_label
+        - :release_date
+        - :custom_fields
+        - :album_artist
+        - :subscription
+        - :partner
+      nest:
+        - :custom_fields
+        -
+          - :album_artist
+          - :subscription
+          - :partner
+    values:
+      custom_fields:
+        - :as_json
+  source:
+    bucket: "foo"
+    key: "foo.zip"
+    password: 'foo'
+    type: "csv"
+    opts:
+      col_sep: "\t"
+      headers: true
+  destination:
+    bucket: "bar"
+    key: "bar.tsv"
+    type: "csv"
+    opts:
+      col_sep: "\t"
+      write_headers: false
+      force_quotes: false
+      quote_char: "\""
+      headers:
+        - :usage_id
+        - :licensee_account_number
+        - :period_start_date
+        - :period_end_date
+        - :territory
+        - :storefront
+        - :service_offering
+        - :configuration_code
+        - :agreement_code
+        - :units
+        - :rate
+        - :amount
+        - :track_id
+        - :hfa_song_code
+        - :composition_title
+        - :writers
+        - :track_isrc
+        - :track_title
+        - :track_primary_artist
+        - :track_duration
+        - :album_upc
+        - :album_title
+        - :record_label
+        - :release_date
+        - :custom_fields
+
 zipped_mac_os:
   transforms:
     row:

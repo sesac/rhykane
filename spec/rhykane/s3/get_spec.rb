@@ -77,5 +77,43 @@ describe Rhykane::S3::Get do
 
       expect(result.string.lines.size).to eq(zipped_expected.read.lines.size + 1)
     end
+
+    it 'streams password-protected zip file in s3 to a pipe and yields the pipe' do
+      bucket, key = 'foo', 'streamable.txt.zip'
+      result      = StringIO.new
+      cli         = stub_s3_resource(stub_responses: {
+                                       get_object: ->(ctx) {
+                                         IO.copy_stream(zipped_password_data, ctx.metadata[:response_target])
+                                         ctx.metadata[:response_target].rewind
+
+                                         { etag: Digest::MD5.hexdigest(zipped_data.read) }
+                                       }
+                                     })
+
+      described_class.(cli, bucket:, key:, password: 'foo') do |rd|
+        IO.copy_stream(rd, result)
+      end
+
+      expect(result.string.lines.size).to eq(zipped_expected.read.lines.size + 1)
+    end
+
+    it 'streams a macOS zip file in s3 to a pipe and yields the pipe' do
+      bucket, key = 'foo', 'streamable.txt.zip'
+      result      = StringIO.new
+      cli         = stub_s3_resource(stub_responses: {
+                                       get_object: ->(ctx) {
+                                         IO.copy_stream(zipped_mac_os_data, ctx.metadata[:response_target])
+                                         ctx.metadata[:response_target].rewind
+
+                                         { etag: Digest::MD5.hexdigest(zipped_data.read) }
+                                       }
+                                     })
+
+      described_class.(cli, bucket:, key:) do |rd|
+        IO.copy_stream(rd, result)
+      end
+
+      expect(result.string.lines.size).to eq(zipped_mac_os_expected.readlines.size)
+    end
   end
 end
