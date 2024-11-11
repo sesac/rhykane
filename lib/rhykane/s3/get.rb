@@ -78,7 +78,7 @@ class Rhykane
             ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, wr_io) end
           end
         end
-        
+
         def new_zip_stream(zip, &) = ::Zip::InputStream.open(zip, 0, decrypter, &)
         def decrypter              = (pwd = opts[:password]) && Zip::TraditionalDecrypter.new(pwd)
 
