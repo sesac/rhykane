@@ -31,7 +31,7 @@ class Rhykane
         @io = ::CSV.new(io, **opts)
       end
 
-      def puts(*rows) = io.puts(*rows.map(&method(:row_to_csv).to_proc).compact)
+      def puts(*rows) = io.puts(*rows.compact.map(&method(:row_to_csv).to_proc))
 
       private
 
@@ -39,7 +39,7 @@ class Rhykane
         case row
         in **row
           ::CSV::Row.new(row.keys, row.values)
-        else 
+        in *row 
           row
         end
       end
