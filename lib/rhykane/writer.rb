@@ -39,7 +39,7 @@ class Rhykane
         case row
         in **row
           ::CSV::Row.new(row.keys, row.values)
-        in *row
+        else 
           row
         end
       end
