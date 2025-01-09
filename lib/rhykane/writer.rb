@@ -37,8 +37,8 @@ class Rhykane
       end
         
       private
-
       def row_to_csv(row)
+        return ::CSV::Row.new([], []) if row.nil?
         case row
         in **row
           ::CSV::Row.new(row.keys, row.values)
