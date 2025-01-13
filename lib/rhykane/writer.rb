@@ -31,22 +31,18 @@ class Rhykane
         @io = ::CSV.new(io, **opts)
       end
 
-      def puts(*rows) 
-        puts "rows: #{rows}"
-        # inputs = *rows.compact.map(&method(:row_to_csv).to_proc)
-        inputs = rows.compact.map { |row| row_to_csv(row) }.compact
-        puts "inputs: #{inputs}"
-        io.puts(*inputs) unless inputs.empty? 
+      def puts(*rows)
+        # io.puts(*rows.map(&method(:row_to_csv).to_proc))
+        inputs = rows.compact.map {&method(:row_to_csv).to_proc}
+        io.puts(*inputs) unless inputs.empty?
       end
-        
+
       private
       def row_to_csv(row)
-        puts "row_to_csv_row: #{row}"
-        return ::CSV::Row.new([], []) if row.nil?
         case row
         in **row
           ::CSV::Row.new(row.keys, row.values)
-        in *row 
+        in *row
           row
         end
       end
