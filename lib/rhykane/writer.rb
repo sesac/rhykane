@@ -33,7 +33,7 @@ class Rhykane
 
       def puts(*rows)
         # io.puts(*rows.map(&method(:row_to_csv).to_proc))
-        inputs = rows.compact.map {&method(:row_to_csv).to_proc}
+        inputs = rows.compact.map(&method(:row_to_csv).to_proc)
         io.puts(*inputs) unless inputs.empty?
       end
 
