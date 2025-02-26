@@ -149,6 +149,20 @@ describe Rhykane do
       dest_path.delete if dest_path.exist?
     end
 
+    it 'reads and parses excel files then transforms them, and writes a single csv file back to S3' do
+      cfg       = Rhykane::Jobs.load(config_path)[:excel]
+
+      input      = spreadsheet_data.open
+      res        = stub_s3_resource(stub_responses: { get_object: { body: input } })
+      dest_path  = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+
+      described_class.(res, **cfg)
+
+      expect(dest_path.read).to eq(spreadsheet_data_expected.read)
+    ensure
+      dest_path.delete if dest_path.exist?
+    end
+
     it 'reads a file from S3, renames it, and writes it back to a file in S3' do
       cfg        = Rhykane::Jobs.load(config_path)[:io]
       input      = tsv_data.open

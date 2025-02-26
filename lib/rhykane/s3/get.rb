@@ -5,11 +5,12 @@ require 'zip'
 require 'stringio'
 require 'zlib'
 require 'rubygems/package'
+require 'roo'
 
 class Rhykane
   module S3
     class Get
-      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip', gz: 'ungzip').freeze
+      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip', gz: 'ungzip', xlsx: 'spreadsheet').freeze
 
       class << self
         def call(*deps, **args, &) = klass(**args).new(*deps, **args).(&)
@@ -55,7 +56,7 @@ class Rhykane
       class Unzip < Get
         private
 
-        def read(wr_io) = get do |file| stream_zip(file, wr_io) end
+        def read(wr_io) = get do |file| copy_stream(file, wr_io) end
 
         def get
           Tempfile.create(filename_parts) do |response_target|
@@ -71,11 +72,11 @@ class Rhykane
           [filename.to_s.split(extname), extname].flatten
         end
 
-        def stream_zip(zip, wr_io)
+        def copy_stream(file, wr_io)
           if decrypter
-            new_zip_stream(zip) do |zip_file| stream_pw_entries(zip_file, wr_io) end
+            new_zip_stream(file) do |zip_file| stream_pw_entries(zip_file, wr_io) end
           else
-            ::Zip::File.open_buffer(zip) do |zip_file| stream_entries(zip_file, wr_io) end
+            ::Zip::File.open_buffer(file) do |zip_file| stream_entries(zip_file, wr_io) end
           end
         end
 
@@ -113,8 +114,13 @@ class Rhykane
 
         UNZIPPER = Zlib::GzipReader
 
-        def read(wr_io)            = get do |file| stream_zip(file, wr_io) end
-        def stream_zip(zip, wr_io) = self.class::UNZIPPER.wrap(zip) do |gz| IO.copy_stream(gz, wr_io) end
+        def copy_stream(zip, wr_io) = self.class::UNZIPPER.wrap(zip) do |gz| IO.copy_stream(gz, wr_io) end
+      end
+
+      class Spreadsheet < Unzip
+        private
+
+        def copy_stream(file, wr_io) = wr_io << Roo::Spreadsheet.open(file).to_csv
       end
     end
   end

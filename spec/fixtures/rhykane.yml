@@ -17,13 +17,13 @@ map_a:
         desc: :title
         total: :amount
       accept_keys:
-        - :record_id
-        - :title
-        - :amount
+      - :record_id
+      - :title
+      - :amount
     values:
       amount:
-        - :to_decimal
-        - :to_float
+      - :to_decimal
+      - :to_float
   source:
     bucket: "foo"
     key: "data.tsv"
@@ -46,10 +46,10 @@ map_b:
         desc: :title
         total: :amount
       accept_keys:
-        - :record_id
-        - :title
-        - :amount
-        - :wat
+      - :record_id
+      - :title
+      - :amount
+      - :wat
       set_default:
         title: "default_value"
         amount: "99"
@@ -66,9 +66,9 @@ map_b:
     type: "csv"
     opts:
       headers:
-        - :record_id
-        - :title
-        - :amount
+      - :record_id
+      - :title
+      - :amount
       write_headers: true
 
 map_c:
@@ -79,13 +79,13 @@ map_c:
         desc: :title
         total: :amount
       accept_keys:
-        - :record_id
-        - :title
-        - :amount
+      - :record_id
+      - :title
+      - :amount
     values:
       amount:
-        - :to_decimal
-        - :to_float
+      - :to_decimal
+      - :to_float
   source:
     bucket: "foo"
     key: "foo.txt.gz"
@@ -129,43 +129,43 @@ zipped:
         record_label: null
         release_date: null
       accept_keys:
-        - :usage_id
-        - :licensee_account_number
-        - :period_start_date
-        - :period_end_date
-        - :territory
-        - :storefront
-        - :service_offering
-        - :configuration_code
-        - :agreement_code
-        - :units
-        - :rate
-        - :amount
-        - :track_id
-        - :hfa_song_code
-        - :composition_title
-        - :writers
-        - :track_isrc
-        - :track_title
-        - :track_primary_artist
-        - :track_duration
-        - :album_upc
-        - :album_title
-        - :record_label
-        - :release_date
-        - :custom_fields
-        - :album_artist
+      - :usage_id
+      - :licensee_account_number
+      - :period_start_date
+      - :period_end_date
+      - :territory
+      - :storefront
+      - :service_offering
+      - :configuration_code
+      - :agreement_code
+      - :units
+      - :rate
+      - :amount
+      - :track_id
+      - :hfa_song_code
+      - :composition_title
+      - :writers
+      - :track_isrc
+      - :track_title
+      - :track_primary_artist
+      - :track_duration
+      - :album_upc
+      - :album_title
+      - :record_label
+      - :release_date
+      - :custom_fields
+      - :album_artist
+      - :subscription
+      - :partner
+      nest:
+      - :custom_fields
+
+      - - :album_artist
         - :subscription
         - :partner
-      nest:
-        - :custom_fields
-        -
-          - :album_artist
-          - :subscription
-          - :partner
     values:
       custom_fields:
-        - :as_json
+      - :as_json
   source:
     bucket: "foo"
     key: "foo.zip"
@@ -183,31 +183,31 @@ zipped:
       force_quotes: false
       quote_char: "\""
       headers:
-        - :usage_id
-        - :licensee_account_number
-        - :period_start_date
-        - :period_end_date
-        - :territory
-        - :storefront
-        - :service_offering
-        - :configuration_code
-        - :agreement_code
-        - :units
-        - :rate
-        - :amount
-        - :track_id
-        - :hfa_song_code
-        - :composition_title
-        - :writers
-        - :track_isrc
-        - :track_title
-        - :track_primary_artist
-        - :track_duration
-        - :album_upc
-        - :album_title
-        - :record_label
-        - :release_date
-        - :custom_fields
+      - :usage_id
+      - :licensee_account_number
+      - :period_start_date
+      - :period_end_date
+      - :territory
+      - :storefront
+      - :service_offering
+      - :configuration_code
+      - :agreement_code
+      - :units
+      - :rate
+      - :amount
+      - :track_id
+      - :hfa_song_code
+      - :composition_title
+      - :writers
+      - :track_isrc
+      - :track_title
+      - :track_primary_artist
+      - :track_duration
+      - :album_upc
+      - :album_title
+      - :record_label
+      - :release_date
+      - :custom_fields
 
 zipped_password:
   transforms:
@@ -238,43 +238,43 @@ zipped_password:
         record_label: null
         release_date: null
       accept_keys:
-        - :usage_id
-        - :licensee_account_number
-        - :period_start_date
-        - :period_end_date
-        - :territory
-        - :storefront
-        - :service_offering
-        - :configuration_code
-        - :agreement_code
-        - :units
-        - :rate
-        - :amount
-        - :track_id
-        - :hfa_song_code
-        - :composition_title
-        - :writers
-        - :track_isrc
-        - :track_title
-        - :track_primary_artist
-        - :track_duration
-        - :album_upc
-        - :album_title
-        - :record_label
-        - :release_date
-        - :custom_fields
-        - :album_artist
+      - :usage_id
+      - :licensee_account_number
+      - :period_start_date
+      - :period_end_date
+      - :territory
+      - :storefront
+      - :service_offering
+      - :configuration_code
+      - :agreement_code
+      - :units
+      - :rate
+      - :amount
+      - :track_id
+      - :hfa_song_code
+      - :composition_title
+      - :writers
+      - :track_isrc
+      - :track_title
+      - :track_primary_artist
+      - :track_duration
+      - :album_upc
+      - :album_title
+      - :record_label
+      - :release_date
+      - :custom_fields
+      - :album_artist
+      - :subscription
+      - :partner
+      nest:
+      - :custom_fields
+
+      - - :album_artist
         - :subscription
         - :partner
-      nest:
-        - :custom_fields
-        -
-          - :album_artist
-          - :subscription
-          - :partner
     values:
       custom_fields:
-        - :as_json
+      - :as_json
   source:
     bucket: "foo"
     key: "foo.zip"
@@ -293,31 +293,31 @@ zipped_password:
       force_quotes: false
       quote_char: "\""
       headers:
-        - :usage_id
-        - :licensee_account_number
-        - :period_start_date
-        - :period_end_date
-        - :territory
-        - :storefront
-        - :service_offering
-        - :configuration_code
-        - :agreement_code
-        - :units
-        - :rate
-        - :amount
-        - :track_id
-        - :hfa_song_code
-        - :composition_title
-        - :writers
-        - :track_isrc
-        - :track_title
-        - :track_primary_artist
-        - :track_duration
-        - :album_upc
-        - :album_title
-        - :record_label
-        - :release_date
-        - :custom_fields
+      - :usage_id
+      - :licensee_account_number
+      - :period_start_date
+      - :period_end_date
+      - :territory
+      - :storefront
+      - :service_offering
+      - :configuration_code
+      - :agreement_code
+      - :units
+      - :rate
+      - :amount
+      - :track_id
+      - :hfa_song_code
+      - :composition_title
+      - :writers
+      - :track_isrc
+      - :track_title
+      - :track_primary_artist
+      - :track_duration
+      - :album_upc
+      - :album_title
+      - :record_label
+      - :release_date
+      - :custom_fields
 
 zipped_mac_os:
   transforms:
@@ -346,49 +346,49 @@ zipped_mac_os:
         album_upc: null
         release_date: null
       accept_keys:
-        - :usage_id
-        - :licensee_account_number
-        - :period_start_date
-        - :period_end_date
-        - :territory
-        - :storefront
-        - :service_offering
-        - :configuration_code
-        - :agreement_code
-        - :units
-        - :rate
-        - :amount
-        - :track_id
-        - :hfa_song_code
-        - :composition_title
-        - :writers
-        - :track_isrc
-        - :track_title
-        - :track_primary_artist
-        - :track_duration
-        - :album_upc
-        - :album_title
-        - :record_label
-        - :release_date
-        - :custom_fields
-        - :company
+      - :usage_id
+      - :licensee_account_number
+      - :period_start_date
+      - :period_end_date
+      - :territory
+      - :storefront
+      - :service_offering
+      - :configuration_code
+      - :agreement_code
+      - :units
+      - :rate
+      - :amount
+      - :track_id
+      - :hfa_song_code
+      - :composition_title
+      - :writers
+      - :track_isrc
+      - :track_title
+      - :track_primary_artist
+      - :track_duration
+      - :album_upc
+      - :album_title
+      - :record_label
+      - :release_date
+      - :custom_fields
+      - :company
+      - :station_name
+      - :catalog_number
+      - :date_of_transition
+      - :publisher_name
+      - :recording_label_name
+      nest:
+      - :custom_fields
+
+      - - :company
         - :station_name
         - :catalog_number
         - :date_of_transition
         - :publisher_name
         - :recording_label_name
-      nest:
-        - :custom_fields
-        -
-          - :company
-          - :station_name
-          - :catalog_number
-          - :date_of_transition
-          - :publisher_name
-          - :recording_label_name
     values:
       custom_fields:
-        - :as_json
+      - :as_json
   source:
     bucket: "foo"
     key: "foo.zip"
@@ -399,18 +399,18 @@ zipped_mac_os:
       strip: true
       liberal_parsing: true
       headers:
-        - company
-        - station_name
-        - track_title
-        - track_primary_artist
-        - album_title
-        - record_label
-        - catalog_number
-        - track_isrc
-        - units
-        - date_of_transmission
-        - publisher_name
-        - recording_label_name
+      - company
+      - station_name
+      - track_title
+      - track_primary_artist
+      - album_title
+      - record_label
+      - catalog_number
+      - track_isrc
+      - units
+      - date_of_transmission
+      - publisher_name
+      - recording_label_name
   destination:
     bucket: "bar"
     key: "bar.tsv"
@@ -421,28 +421,121 @@ zipped_mac_os:
       force_quotes: false
       quote_char: "\""
       headers:
-        - :usage_id
-        - :licensee_account_number
-        - :period_start_date
-        - :period_end_date
-        - :territory
-        - :storefront
-        - :service_offering
-        - :configuration_code
-        - :agreement_code
-        - :units
-        - :rate
-        - :amount
-        - :track_id
-        - :hfa_song_code
-        - :composition_title
-        - :writers
-        - :track_isrc
-        - :track_title
-        - :track_primary_artist
-        - :track_duration
-        - :album_upc
-        - :album_title
-        - :record_label
-        - :release_date
-        - :custom_fields
+      - :usage_id
+      - :licensee_account_number
+      - :period_start_date
+      - :period_end_date
+      - :territory
+      - :storefront
+      - :service_offering
+      - :configuration_code
+      - :agreement_code
+      - :units
+      - :rate
+      - :amount
+      - :track_id
+      - :hfa_song_code
+      - :composition_title
+      - :writers
+      - :track_isrc
+      - :track_title
+      - :track_primary_artist
+      - :track_duration
+      - :album_upc
+      - :album_title
+      - :record_label
+      - :release_date
+      - :custom_fields
+
+excel:
+  source:
+    bucket: "foo"
+    key: "foo.xlsx"
+    type: "csv"
+    opts:
+      skip_blanks: true
+      headers: true
+  destination:
+    bucket: "foo"
+    key: "foo.csv"
+    type: "csv"
+    opts:
+      skip_blanks: true
+      headers: true
+      headers:
+      - :period_type
+      - :period_start_date_yyyymmdd
+      - :period_end_date_yyyymmdd
+      - :licensee_account_number
+      - :licensee_name
+      - :owner_ipi_number
+      - :owner_account_number
+      - :owner_account_name
+      - :admin_ipi_number
+      - :admin_account_number
+      - :admin_account_name
+      - :hfa_publisher_number
+      - :top_account_number
+      - :top_account_name
+      - :iswc
+      - :property_number
+      - :hfa_song_code
+      - :song_title
+      - :split
+      - :writer_names
+      - :artist_name
+      - :album_title
+      - :isrc
+      - :upc
+      - :label_name
+      - :service_offering
+      - :units
+      - :royalty_rate
+      - :royalty_amount
+      - :commission_rate
+      - :commission_amount
+      - :payable_amount
+      - :check_number
+      - :license_number
+      - :play_minutes
+      - :play_seconds
+      - :license_rate_code
+      - :configuration
+      - :configuration_group
+      - :territory_code
+      - :foreign_currency
+      - :exchange_rate
+      - :foreign_amount
+      - :foreign_tax_rate
+      - :foreign_tax_amount
+      - :"3rd_party_info"
+      - :organization_name
+      - :publisher_song_id
+      - :source_code
+      - :relationship_type
+      - :transaction_description
+      - :direct_distribution_flag
+      - :licensee_publisher_id
+      - :licensee_publisher_name
+      - :licensee_split
+      - :additional_licensee_publisher_numbers
+      - :licensee_tune_number
+      - :licensee_catalog_number
+      - :licensee_sale_type
+      - :licensee_sale_type_description
+      - :misc_1
+      - :misc_2
+      - :misc_3
+      - :misc_4
+      - :misc_5
+      - :misc_6
+      - :misc_7
+      - :misc_8
+      - :misc_9
+      - :misc_10
+      - :amount
+      write_headers: true
+  transforms:
+    row:
+      rename_keys:
+        gross_amount: :amount
