@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'oj', '~> 3.13'
   spec.add_dependency 'rexml', '~> 3.3'
   spec.add_dependency 'rubyzip', '~> 2.3'
+  spec.add_dependency 'roo', '~> 2.10'
 end
