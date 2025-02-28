@@ -10,7 +10,7 @@ require 'roo'
 class Rhykane
   module S3
     class Get
-      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip', gz: 'ungzip', xlsx: 'spreadsheet').freeze
+      DECOMPRESSION_STRATEGIES = Hash.new('stream').merge(zip: 'unzip', gz: 'ungzip', xlsx: 'excel').freeze
 
       class << self
         def call(*deps, **args, &) = klass(**args).new(*deps, **args).(&)
@@ -117,10 +117,10 @@ class Rhykane
         def copy_stream(zip, wr_io) = self.class::UNZIPPER.wrap(zip) do |gz| IO.copy_stream(gz, wr_io) end
       end
 
-      class Spreadsheet < Unzip
+      class Excel < Unzip
         private
 
-        def copy_stream(file, wr_io) = wr_io << Roo::Spreadsheet.open(file).to_csv
+        def copy_stream(file, wr_io) = wr_io << Roo::Excelx.new(file).to_csv
       end
     end
   end

@@ -9,6 +9,7 @@ PATH
       dry-validation (~> 1.10)
       oj (~> 3.13)
       rexml (~> 3.3)
+      roo (~> 2.10)
       rubyzip (~> 2.3)
 
 GEM
