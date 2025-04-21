@@ -28,6 +28,8 @@ class Rhykane
 
       def self.split(original) = original&.split&.first
 
+      def self.round_up(value) = value.ceil
+
       def self.parse_period(value, args)
         return unless value
 
