@@ -98,4 +98,11 @@ describe Rhykane::Transformer::Transforms do
 
     expect(result).to eq('1978-01-01')
   end
+
+  it 'rounds up decimal to next integer' do
+    units = 4.2345
+    result = described_class.round_up(units)
+
+    expect(result).to eq(5.0)
+  end
 end
