@@ -105,4 +105,11 @@ describe Rhykane::Transformer::Transforms do
 
     expect(result).to eq(5.0)
   end
+
+    it 'adusts share pct for splits reported incorrectly' do
+    submitted_share = 0.5
+    result = described_class.adjust_share(submitted_share)
+
+    expect(result).to eq(50.0)
+  end
 end

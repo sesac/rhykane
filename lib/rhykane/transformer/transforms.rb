@@ -73,6 +73,10 @@ class Rhykane
 
         "PT#{h}H#{m}M#{s}S"
       end
+
+      def self.adjust_share(value)
+        value * 100
+      end
     end
   end
 end
