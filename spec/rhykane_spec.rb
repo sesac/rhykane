@@ -161,6 +161,29 @@ describe Rhykane do
     ensure
       dest_path.delete if dest_path.exist?
     end
+
+    it 'dynamically sets part_size of multipart upload based on object size' do
+      cfg        = Rhykane::Jobs.load(config_path)[:io]
+      input      = tsv_data.open
+
+      default_part_size = 5 * 1024 * 1024 # 5 MiB
+      object_size  = rand((10 * 1024 * 1024)..(100 * 1024 * 1024 * 1024)) # 10 MiB..100 GiB
+      max_s3_parts = 10_000 # S3 allows a maximum of 10,000 parts in a multipart upload
+      calculated_size = (object_size.fdiv(max_s3_parts)).ceil
+
+      res = stub_s3_resource(stub_responses: { get_object: { body: input }, head_object: { content_length: object_size } })
+      dest_path = s3_path(*cfg[:destination].values_at(:bucket, :key)).tap { |p| p.delete if p.exist? }
+
+      expect_any_instance_of(Aws::S3::Object).to receive(:upload_stream)
+        .with(hash_including(part_size: [default_part_size, calculated_size].max))
+        .and_call_original
+
+      described_class.(res, **cfg)
+
+      expect(dest_path.read).to eq(tsv_data.read)
+    ensure
+      dest_path.delete if dest_path.exist?
+    end
   end
 
   describe '.for' do
