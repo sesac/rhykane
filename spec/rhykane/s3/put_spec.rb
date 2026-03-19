@@ -12,7 +12,7 @@ describe Rhykane::S3::Put do
         s.rewind
       }
 
-      described_class.(res, io, bucket:, key:, source_bucket: 'bar', source_key: 'bar.txt')
+      described_class.(res, io, bucket:, key:)
 
       expect(key_path.read).to eq io.tap(&:rewind).read
     end
