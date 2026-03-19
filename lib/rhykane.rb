@@ -55,6 +55,6 @@ class Rhykane
   def new_reader(input)      = Reader.(input, **source)
   def new_writer(io)         = Writer.(io, **destination)
   def source                 = config[:source]
-  def destination            = config[:destination].merge(source_key: source[:key], source_bucket: source[:bucket])
+  def destination            = config[:destination]
   def transforms             = config[:transforms]
 end
