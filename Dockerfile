@@ -1,4 +1,4 @@
-FROM ruby:3.2-slim AS rhykane
+FROM ruby:3.2.2-slim-bookworm AS rhykane
 
 ARG BUNDLE_GITHUB__COM
 ENV BUNDLE_GITHUB__COM=$BUNDLE_GITHUB__COM
