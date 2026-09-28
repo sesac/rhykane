@@ -1,9 +1,9 @@
-FROM ruby:3.2.0 AS rhykane
+FROM ruby:3.2-slim AS rhykane
 
 ARG BUNDLE_GITHUB__COM
 ENV BUNDLE_GITHUB__COM=$BUNDLE_GITHUB__COM
 
-RUN apt-get update --allow-releaseinfo-change && apt-get install -y --fix-missing \
+RUN apt-get update && apt-get install -y \
     libaio1 \
     locales \
     && locale-gen en_US.UTF-8 \
