@@ -3,7 +3,8 @@ FROM ruby:3.2.2-slim-bookworm AS rhykane
 ARG BUNDLE_GITHUB__COM
 ENV BUNDLE_GITHUB__COM=$BUNDLE_GITHUB__COM
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
     libaio1 \
     locales \
     wget \
