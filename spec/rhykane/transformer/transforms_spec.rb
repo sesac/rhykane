@@ -105,4 +105,9 @@ describe Rhykane::Transformer::Transforms do
 
     expect(result).to eq(5.0)
   end
+
+  it 'removes non-alphanumeric characters' do
+    expect(described_class.remove_special_characters('362218 - 5/12')).to eq('362218512')
+    expect(described_class.remove_special_characters(nil)).to be_nil
+  end
 end

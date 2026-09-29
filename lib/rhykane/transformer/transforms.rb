@@ -28,6 +28,8 @@ class Rhykane
 
       def self.split(original) = original&.split&.first
 
+      def self.remove_special_characters(value) = value&.gsub(/[^[:alnum:]]/, '')
+
       def self.round_up(value) = value.ceil
 
       def self.parse_period(value, args)
